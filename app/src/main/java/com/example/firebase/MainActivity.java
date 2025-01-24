@@ -17,70 +17,91 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-Button RB,LB,PB;
-TextView ST, userNameTextView;
-    private FirebaseAuth mAuth;
+
+    private Button registerButton, loginButton, playButton, logoutButton;
+    private TextView scoreTextView, welcomeTextView;
+    private FirebaseAuth firebaseAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        // Get score from intent
         Intent intent = getIntent();
         int score = intent.hasExtra("score") ? intent.getIntExtra("score", 0) : 0;
-        ST = (TextView) findViewById(R.id.ST);
-        userNameTextView = findViewById(R.id.userNameTextView);
-        
-        ST.setText("Score:" + score);
+
+        // Initialize views
+        scoreTextView = findViewById(R.id.ST);
+        welcomeTextView = findViewById(R.id.userNameTextView);
+        playButton = findViewById(R.id.PB);
+        registerButton = findViewById(R.id.RB);
+        loginButton = findViewById(R.id.LB);
+        logoutButton = findViewById(R.id.logoutButton);
+
+        // Set score text
+        scoreTextView.setText("Score: " + score);
+
+        // Adjust window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        PB = (Button) findViewById(R.id.PB);
-        RB = (Button) findViewById(R.id.RB);
-        LB = (Button) findViewById(R.id.LB);
 
-        RB.setOnClickListener(this);
-        LB.setOnClickListener(this);
-        PB.setOnClickListener(this);
+        // Set button click listeners
+        registerButton.setOnClickListener(this);
+        loginButton.setOnClickListener(this);
+        playButton.setOnClickListener(this);
+        logoutButton.setOnClickListener(this);
 
-        displayUserName();
+        // Display user name
+        displayUserNameAndUpdateButtons();
     }
 
-    private void displayUserName() {
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+    private void displayUserNameAndUpdateButtons() {
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             String displayName = currentUser.getDisplayName();
             if (displayName != null && !displayName.isEmpty()) {
-                userNameTextView.setText("Welcome, " + displayName + "!");
+                welcomeTextView.setText("Welcome, " + displayName + "!");
             } else {
-                userNameTextView.setText("Welcome!");
+                welcomeTextView.setText("Welcome!");
             }
+            scoreTextView.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.GONE);
+            registerButton.setVisibility(View.GONE);
+            logoutButton.setVisibility(View.VISIBLE);
         } else {
-            userNameTextView.setText("Welcome, Guest!");
+            welcomeTextView.setText("Welcome, Guest!");
+            scoreTextView.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
+            registerButton.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.GONE);
         }
     }
 
     @Override
-    public void onClick(View v) {
-        if (v == RB)
-        {
+    public void onClick(View view) {
+        if (view == registerButton) {
             Intent intent = new Intent(MainActivity.this, Register.class);
-            startActivityForResult(intent,1);
-        }
-        else if (v == LB)
-        {
+            startActivityForResult(intent, 1);
+        } else if (view == loginButton) {
             Intent intent = new Intent(MainActivity.this, Login.class);
-            startActivityForResult(intent,2);
-        }
-        else if (v == PB) {
-            if (mAuth.getCurrentUser() == null) {
+            startActivityForResult(intent, 2);
+        } else if (view == playButton) {
+            if (firebaseAuth.getCurrentUser() == null) {
                 Toast.makeText(MainActivity.this, "User isn't logged in", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(MainActivity.this, Game.class);
                 startActivityForResult(intent, 3);
             }
+        } else if (view == logoutButton) {
+            firebaseAuth.signOut();
+            Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
+            displayUserNameAndUpdateButtons(); // Refresh the UI after logout
         }
     }
 }
