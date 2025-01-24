@@ -1,48 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Register"
-    android:orientation="vertical">
+    android:padding="16dp"
+    android:background="@drawable/dark_gradient_background"
+    tools:context=".Register">
 
+    <!-- Email Input -->
     <EditText
-        android:layout_width="180dp"
-        android:layout_height="40dp"
         android:id="@+id/ET"
-        android:hint="Enter E-Mail"
-        android:layout_gravity="center"
-        android:layout_marginTop="100dp"/>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter Email"
+        android:inputType="textEmailAddress"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:background="@android:drawable/edit_text"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="40dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Password Input -->
     <EditText
-        android:layout_width="180dp"
-        android:layout_height="40dp"
         android:id="@+id/PT"
-        android:hint="Enter password"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"/>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter Password"
+        android:inputType="textPassword"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:background="@android:drawable/edit_text"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/ET"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- First Name Input -->
     <EditText
-        android:layout_width="180dp"
-        android:layout_height="40dp"
         android:id="@+id/FT"
-        android:hint="Enter first name"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"/>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter First Name"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:background="@android:drawable/edit_text"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/PT"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Last Name Input -->
     <EditText
-        android:layout_width="180dp"
-        android:layout_height="40dp"
         android:id="@+id/LT"
-        android:hint="Enter last name"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"/>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter Last Name"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:background="@android:drawable/edit_text"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/FT"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Register Button -->
     <Button
+        android:id="@+id/SB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Submit"
-        android:id="@+id/SB"
-        android:layout_marginTop="40dp"
-        android:layout_gravity="center"
-        android:textSize="25dp"/>
+        android:text="Register"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp"
+        app:layout_constraintTop_toBottomOf="@id/LT"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="30dp" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar"
+        app:layout_constraintTop_toBottomOf="@id/SB"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp" />
+
+    <!-- Already Have an Account Text -->
+    <TextView
+        android:id="@+id/loginLink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Already have an account? Login here"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold" />
+</androidx.constraintlayout.widget.ConstraintLayout>
