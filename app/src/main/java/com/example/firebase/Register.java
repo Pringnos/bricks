@@ -27,8 +27,6 @@ import java.util.Map;
 
 public class Register extends AppCompatActivity implements View.OnClickListener {
     private FirebaseAuth mAuth;
-    // private FirebaseFirestore db;
-
     EditText FT, LT , PT , ET;
     Button SB;
     @Override
@@ -68,6 +66,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
             if (ET.getText().toString().isBlank() ||FT.getText().toString().isBlank() ||LT.getText().toString().isBlank() ||PT.getText().toString().isBlank()) {
                 Toast.makeText(Register.this, "Missing properties.",
                         Toast.LENGTH_SHORT).show();
+                return;
             }
             String email = ET.getText().toString();
             String password = PT.getText().toString();
@@ -80,11 +79,30 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-
+                                // Sign in success
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                updateUI(user);
+                                if (user != null) {
+                                    // Update the user's profile
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(firstName + " " + lastName) // Set display name
+                                            .build();
+
+                                    user.updateProfile(profileUpdates)
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Log.d("Register", "User profile updated.");
+                                                        updateUI(user); // Redirect the user
+                                                    } else {
+                                                        Log.e("Register", "Failed to update profile: " + task.getException());
+                                                        Toast.makeText(Register.this, "Failed to update profile.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                            });
+                                }
                             } else {
+                                // If sign-in fails, display a message to the user.
                                 String errorMessage = task.getException() != null ? task.getException().getMessage() : "Unknown error";
                                 Log.e("Register", "Authentication failed: " + errorMessage);
                                 Toast.makeText(Register.this, "Authentication failed: " + errorMessage, Toast.LENGTH_SHORT).show();

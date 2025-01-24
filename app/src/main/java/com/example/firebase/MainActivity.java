@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 Button RB,LB,PB;
-TextView ST;
+TextView ST, userNameTextView;
     private FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +29,8 @@ TextView ST;
         Intent intent = getIntent();
         int score = intent.hasExtra("score") ? intent.getIntExtra("score", 0) : 0;
         ST = (TextView) findViewById(R.id.ST);
+        userNameTextView = findViewById(R.id.userNameTextView);
+        
         ST.setText("Score:" + score);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -43,8 +45,22 @@ TextView ST;
         LB.setOnClickListener(this);
         PB.setOnClickListener(this);
 
+        displayUserName();
     }
 
+    private void displayUserName() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            String displayName = currentUser.getDisplayName();
+            if (displayName != null && !displayName.isEmpty()) {
+                userNameTextView.setText("Welcome, " + displayName + "!");
+            } else {
+                userNameTextView.setText("Welcome!");
+            }
+        } else {
+            userNameTextView.setText("Welcome, Guest!");
+        }
+    }
 
     @Override
     public void onClick(View v) {
