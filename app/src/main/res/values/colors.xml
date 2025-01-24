@@ -2,4 +2,23 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Primary Colors -->
+    <color name="primary">#6200EE</color> <!-- A deep purple for buttons and primary UI elements -->
+    <color name="primary_variant">#3700B3</color> <!-- A darker shade of primary for pressed states -->
+    <color name="secondary">#03DAC6</color> <!-- Teal for highlights and accents -->
+    <color name="background">#FFFFFF</color> <!-- White for app background -->
+    <color name="surface">#F5F5F5</color> <!-- Light gray for card or surface elements -->
+
+    <!-- Text Colors -->
+    <color name="on_primary">#FFFFFF</color> <!-- White for text on primary elements -->
+    <color name="on_secondary">#000000</color> <!-- Black for text on secondary elements -->
+    <color name="on_background">#000000</color> <!-- Black for text on white background -->
+    <color name="on_surface">#4A4A4A</color> <!-- Dark gray for text on surface elements -->
+
+    <!-- Additional Colors -->
+    <color name="error">#B00020</color> <!-- Red for error messages -->
+    <color name="success">#388E3C</color> <!-- Green for success states -->
+    <color name="warning">#F9A825</color> <!-- Yellow for warnings -->
+
+    <color name="teal_200">#03DAC6</color>
 </resources>

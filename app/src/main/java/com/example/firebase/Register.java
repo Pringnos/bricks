@@ -85,9 +85,9 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 updateUI(user);
                             } else {
-                                // If sign in fails, display a message to the user.
-                                Toast.makeText(Register.this, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
+                                String errorMessage = task.getException() != null ? task.getException().getMessage() : "Unknown error";
+                                Log.e("Register", "Authentication failed: " + errorMessage);
+                                Toast.makeText(Register.this, "Authentication failed: " + errorMessage, Toast.LENGTH_SHORT).show();
                                 updateUI(null);
                             }
                         }

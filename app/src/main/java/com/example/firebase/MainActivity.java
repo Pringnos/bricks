@@ -27,7 +27,7 @@ TextView ST;
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
-        int score = intent.getIntExtra("score", 0);
+        int score = intent.hasExtra("score") ? intent.getIntExtra("score", 0) : 0;
         ST = (TextView) findViewById(R.id.ST);
         ST.setText("Score:" + score);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -58,15 +58,10 @@ TextView ST;
             Intent intent = new Intent(MainActivity.this, Login.class);
             startActivityForResult(intent,2);
         }
-        else if (v == PB)
-        {
-            if (mAuth.getCurrentUser() != null)
-            {
-                Toast.makeText(MainActivity.this, "User isn't logged in",
-                        Toast.LENGTH_SHORT).show();
-            }
-            else {
-
+        else if (v == PB) {
+            if (mAuth.getCurrentUser() == null) {
+                Toast.makeText(MainActivity.this, "User isn't logged in", Toast.LENGTH_SHORT).show();
+            } else {
                 Intent intent = new Intent(MainActivity.this, Game.class);
                 startActivityForResult(intent, 3);
             }

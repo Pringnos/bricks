@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.example.firebase"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.firebase"
         minSdk = 27
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -48,4 +48,16 @@ dependencies {
     // Add the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation(libs.google.firebase.auth)
+}
+
+subprojects {
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.version?.contains("-alpha") == true ||
+                requested.version?.contains("-beta") == true ||
+                requested.version?.contains("-rc") == true) {
+                throw GradleException("Alpha/Beta/RC versions are not allowed: ${requested.group}:${requested.name}:${requested.version}")
+            }
+        }
+    }
 }
