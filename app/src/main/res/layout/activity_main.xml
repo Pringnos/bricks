@@ -14,7 +14,7 @@
         android:id="@+id/userNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:text="Welcome!"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -36,7 +36,7 @@
         app:layout_constraintTop_toBottomOf="@id/userNameTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="40dp" />
 
     <!-- Register Button -->
     <Button
@@ -51,7 +51,7 @@
         app:layout_constraintTop_toBottomOf="@id/LB"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="30dp" />
 
     <!-- Play Button -->
     <Button
@@ -67,7 +67,7 @@
         app:layout_constraintTop_toBottomOf="@id/RB"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="100dp" />
 
     <!-- Score Text -->
     <TextView
@@ -93,9 +93,9 @@
         android:background="@drawable/neon_button_background"
         android:textColor="@android:color/white"
         android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/ST"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+        android:layout_marginBottom="50dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

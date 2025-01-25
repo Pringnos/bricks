@@ -71,12 +71,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 welcomeTextView.setText("Welcome!");
             }
             scoreTextView.setVisibility(View.VISIBLE);
+            playButton.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.GONE);
             registerButton.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
         } else {
             welcomeTextView.setText("Welcome, Guest!");
             scoreTextView.setVisibility(View.GONE);
+            playButton.setVisibility(View.GONE);
             loginButton.setVisibility(View.VISIBLE);
             registerButton.setVisibility(View.VISIBLE);
             logoutButton.setVisibility(View.GONE);
