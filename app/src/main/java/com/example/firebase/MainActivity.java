@@ -16,6 +16,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.example.firebase.game.Game;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button registerButton, loginButton, playButton, playAsGuestButton, logoutButton;

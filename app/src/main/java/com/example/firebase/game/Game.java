@@ -1,4 +1,4 @@
-package com.example.firebase;
+package com.example.firebase.game;
 
 import android.os.Bundle;
 import android.widget.FrameLayout;
@@ -9,8 +9,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.firebase.game.BoardGame;
+import com.example.firebase.R;
+
 public class Game extends AppCompatActivity {
-BoardGame boardGame;
+    BoardGame boardGame;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
