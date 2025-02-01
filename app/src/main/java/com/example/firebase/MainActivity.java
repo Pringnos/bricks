@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button registerButton, loginButton, playButton, logoutButton;
+    private Button registerButton, loginButton, playButton, playAsGuestButton, logoutButton;
     private TextView scoreTextView, welcomeTextView;
     private FirebaseAuth firebaseAuth;
 
@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         scoreTextView = findViewById(R.id.ST);
         welcomeTextView = findViewById(R.id.userNameTextView);
         playButton = findViewById(R.id.PB);
+        playAsGuestButton = findViewById(R.id.playAsGuestButton); // New button
         registerButton = findViewById(R.id.RB);
         loginButton = findViewById(R.id.LB);
         logoutButton = findViewById(R.id.logoutButton);
@@ -55,9 +56,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         registerButton.setOnClickListener(this);
         loginButton.setOnClickListener(this);
         playButton.setOnClickListener(this);
+        playAsGuestButton.setOnClickListener(this);
         logoutButton.setOnClickListener(this);
 
-        // Display user name
+        // Display user name & update button visibility
         displayUserNameAndUpdateButtons();
     }
 
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             scoreTextView.setVisibility(View.VISIBLE);
             playButton.setVisibility(View.VISIBLE);
+            playAsGuestButton.setVisibility(View.GONE); // Hide guest play button
             loginButton.setVisibility(View.GONE);
             registerButton.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
@@ -79,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             welcomeTextView.setText("Welcome, Guest!");
             scoreTextView.setVisibility(View.GONE);
             playButton.setVisibility(View.GONE);
+            playAsGuestButton.setVisibility(View.VISIBLE); // Show guest play button
             loginButton.setVisibility(View.VISIBLE);
             registerButton.setVisibility(View.VISIBLE);
             logoutButton.setVisibility(View.GONE);
@@ -100,10 +104,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(MainActivity.this, Game.class);
                 startActivityForResult(intent, 3);
             }
+        } else if (view == playAsGuestButton) {
+            // Start game as a guest
+            Intent intent = new Intent(MainActivity.this, Game.class);
+            startActivity(intent);
         } else if (view == logoutButton) {
             firebaseAuth.signOut();
             Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
-            displayUserNameAndUpdateButtons(); // Refresh the UI after logout
+            displayUserNameAndUpdateButtons(); // Refresh UI after logout
         }
     }
 }

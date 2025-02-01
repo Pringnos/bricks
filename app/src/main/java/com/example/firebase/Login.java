@@ -99,8 +99,33 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                         FirebaseUser user = firebaseAuth.getCurrentUser();
                         updateUI(user);
                     } else {
-                        Toast.makeText(Login.this, "Authentication failed: " + task.getException().getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        Exception exception = task.getException();
+                        String errorMessage = "Authentication failed.";
+
+                        if (exception != null) {
+                            Log.e("LoginError", "Login failed", exception);
+
+                            String exceptionMessage = exception.getMessage();
+                            if (exceptionMessage != null) {
+                                if (exceptionMessage.contains("INVALID_EMAIL")) {
+                                    errorMessage = "Invalid email format. Please check your email.";
+                                } else if (exceptionMessage.contains("USER_NOT_FOUND")) {
+                                    errorMessage = "No account found with this email.";
+                                } else if (exceptionMessage.contains("WRONG_PASSWORD")) {
+                                    errorMessage = "Incorrect password. Please try again.";
+                                } else if (exceptionMessage.contains("USER_DISABLED")) {
+                                    errorMessage = "This account has been disabled.";
+                                } else if (exceptionMessage.contains("TOO_MANY_REQUESTS")) {
+                                    errorMessage = "Too many failed attempts. Try again later.";
+                                } else if (exceptionMessage.contains("NETWORK_ERROR")) {
+                                    errorMessage = "Network error. Please check your internet connection.";
+                                } else {
+                                    errorMessage = exceptionMessage; // Show Firebase's actual error message
+                                }
+                            }
+                        }
+
+                        Toast.makeText(Login.this, errorMessage, Toast.LENGTH_LONG).show();
                         updateUI(null);
                     }
                 });
