@@ -1,5 +1,6 @@
 package com.example.firebase;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -19,17 +22,37 @@ import com.google.firebase.auth.FirebaseUser;
 import com.example.firebase.game.Game;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
+    private ActivityResultLauncher<Intent> registerActivityLauncher;
+    private ActivityResultLauncher<Intent> loginActivityLauncher;
+    private ActivityResultLauncher<Intent> playActivityLauncher;
     private Button registerButton, loginButton, playButton, playAsGuestButton, logoutButton;
     private TextView scoreTextView, welcomeTextView;
     private FirebaseAuth firebaseAuth;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         firebaseAuth = FirebaseAuth.getInstance();
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        loginActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        displayUserNameAndUpdateButtons(); // Refresh UI after login
+                    }
+                }
+        );
+        playActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> { /* todo: update game high score */ }
+        );
+        registerActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> { }
+        );
 
         // Get score from intent
         Intent intent = getIntent();
@@ -44,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         loginButton = findViewById(R.id.LB);
         logoutButton = findViewById(R.id.logoutButton);
 
-        // Set score text
         scoreTextView.setText("Score: " + score);
 
         // Adjust window insets
@@ -70,9 +92,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (currentUser != null) {
             String displayName = currentUser.getDisplayName();
             if (displayName != null && !displayName.isEmpty()) {
-                welcomeTextView.setText("Welcome, " + displayName + "!");
+                welcomeTextView.setText(getString(R.string.welcome, displayName));
             } else {
-                welcomeTextView.setText("Welcome!");
+                welcomeTextView.setText(getString(R.string.welcome));
             }
             scoreTextView.setVisibility(View.VISIBLE);
             playButton.setVisibility(View.VISIBLE);
@@ -81,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             registerButton.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
         } else {
-            welcomeTextView.setText("Welcome, Guest!");
+            welcomeTextView.setText(getString(R.string.welcome_guest));
             scoreTextView.setVisibility(View.GONE);
             playButton.setVisibility(View.GONE);
             playAsGuestButton.setVisibility(View.VISIBLE); // Show guest play button
@@ -95,21 +117,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if (view == registerButton) {
             Intent intent = new Intent(MainActivity.this, Register.class);
-            startActivityForResult(intent, 1);
+            registerActivityLauncher.launch(intent);
         } else if (view == loginButton) {
             Intent intent = new Intent(MainActivity.this, Login.class);
-            startActivityForResult(intent, 2);
+            loginActivityLauncher.launch(intent);
         } else if (view == playButton) {
             if (firebaseAuth.getCurrentUser() == null) {
                 Toast.makeText(MainActivity.this, "User isn't logged in", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(MainActivity.this, Game.class);
-                startActivityForResult(intent, 3);
+                playActivityLauncher.launch(intent);
             }
         } else if (view == playAsGuestButton) {
             // Start game as a guest
             Intent intent = new Intent(MainActivity.this, Game.class);
-            startActivity(intent);
+            startActivity(intent); // No need for a result
         } else if (view == logoutButton) {
             firebaseAuth.signOut();
             Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
