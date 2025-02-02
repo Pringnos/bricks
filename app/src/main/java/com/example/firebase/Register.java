@@ -29,7 +29,6 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
     private EditText emailEditText, passwordEditText, firstNameEditText, lastNameEditText;
     private Button registerButton;
     private ProgressBar progressBar;
-    private TextView loginLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +45,7 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         lastNameEditText = findViewById(R.id.LT);
         registerButton = findViewById(R.id.SB);
         progressBar = findViewById(R.id.progressBar);
-        loginLink = findViewById(R.id.loginLink);
+        TextView loginLink = findViewById(R.id.loginLink);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
