@@ -126,12 +126,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Toast.makeText(MainActivity.this, "User isn't logged in", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(MainActivity.this, Game.class);
-                playActivityLauncher.launch(intent);
+                intent.putExtra("LEVEL_NUMBER", 1);
+                startActivity(intent);
             }
         } else if (view == playAsGuestButton) {
-            // Start game as a guest
             Intent intent = new Intent(MainActivity.this, Game.class);
-            startActivity(intent); // No need for a result
+            intent.putExtra("LEVEL_NUMBER", 1);
+            startActivity(intent);
         } else if (view == logoutButton) {
             firebaseAuth.signOut();
             Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();

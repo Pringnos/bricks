@@ -1,140 +1,205 @@
 package com.example.firebase.game;
 
-import static android.app.ProgressDialog.show;
-
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.ArrayList;
-
-import com.example.firebase.game.Block;
-import com.example.firebase.game.Cirlce;
-import com.example.firebase.game.Objects;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class BoardGame extends View {
-    private float r = 300;
-    Context context;
-    Paint paint = new Paint();
-    Paint paint1 = new Paint();
-    Paint lv1 = new Paint();
-    Paint lv2 = new Paint();
-    Paint lv3 = new Paint();
-    Objects a = new Objects(180, 950,100,50);
-    Cirlce p = new Cirlce(500,950,30);
-    Block q = new Block(100, 100, 75,50,3,lv1);
-    Block w = new Block(500, 300, 75,50,3,lv1);
-    Block e = new Block(500, 200, 75,50,2,lv1);
-    Block t = new Block(500, 300, 75,50,2,lv1);
-    Block y = new Block(300, 300, 75,50,1,lv1);
+    private int levelNumber;
+    private List<Block> blocks;
+    private float touchX = 300;
+    private int screenHeight;
+    private int gameAreaHeight; // New height limit for the game area
 
+    // Paint objects
+    private Paint ballPaint, paddlePaint, blockPaint, textPaint;
 
+    // Game objects
+    private Objects paddle;
+    private Cirlce ball;
 
-    public BoardGame(Context context) {
+    public BoardGame(Context context, int levelNumber) {
         super(context);
-        this.context = context;
-
+        this.levelNumber = levelNumber;
+        init(); // Initialize objects
     }
+
+    private void init() {
+        // Initialize paint objects
+        ballPaint = new Paint();
+        ballPaint.setColor(Color.BLUE);
+
+        paddlePaint = new Paint();
+        paddlePaint.setColor(Color.BLACK);
+
+        blockPaint = new Paint();
+        blockPaint.setColor(Color.RED);
+
+        textPaint = new Paint();
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(50);
+
+        // Initialize game objects
+        paddle = new Objects(180, 750, 200, 50);
+        ball = new Cirlce(500, 700, 30); // Move ball up
+
+        initializeLevel();
+    }
+
+    private void initializeLevel() {
+        blocks = new ArrayList<>();
+
+        int blockWidth = 150;
+        int blockHeight = 50;
+        int spacing = 20; // Horizontal spacing between blocks
+        int startX = 50;
+
+        if (levelNumber == 1) {
+            blocks.add(new Block(startX, 100, blockWidth, blockHeight, 3, blockPaint));
+            blocks.add(new Block(startX + blockWidth + spacing, 100, blockWidth, blockHeight, 2, blockPaint));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1, blockPaint));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 3, blockPaint));
+
+            blocks.add(new Block(startX + (blockWidth / 2), 170, blockWidth, blockHeight, 2, blockPaint));
+            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 170, blockWidth, blockHeight, 1, blockPaint));
+            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2, blockPaint));
+
+            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 3, blockPaint));
+        }
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        screenHeight = h;
+        gameAreaHeight = (int) (screenHeight * 0.8); // 80% for game, 20% for UI
+
+        paddle = new Objects(w / 2 - 50, gameAreaHeight - 50, 200, 40);
+        ball = new Cirlce(w / 2, gameAreaHeight - 80, 30);
+    }
+
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
-
         super.onDraw(canvas);
-        paint.setColor(Color.BLUE);
-        paint1.setColor(Color.BLACK);
-        lv1.setColor(Color.YELLOW);
-        lv2.setColor(Color.parseColor("#FF9500"));
-        lv3.setColor(Color.RED);
-        canvas.drawCircle(p.getX(),p.getY(),p.getR(),paint);
-        canvas.drawRect(a.getX(),a.getY(), a.getWo(), a.getHo(), paint1);
-        Movement(p);
-        Collision(a,p);
 
-        UC(w);
-        if (w.getU()>0){
-            canvas.drawRect(w.getX(),w.getY(),w.getWo(),w.getHo(),w.getPaint());
-            Dissapear(w,p);
+        // ********** Draw the Game Area **********
+        canvas.save(); // Save current canvas state
+        canvas.clipRect(0, 0, getWidth(), gameAreaHeight); // Clip only the game area
+        canvas.drawColor(Color.DKGRAY); // Background color for the game area
+
+        // Temporary list to store blocks to remove
+        List<Block> toRemove = new ArrayList<>();
+
+        // Draw blocks and check collisions
+        for (int i = 0; i < blocks.size(); i++) {
+            Block block = blocks.get(i);
+            canvas.drawRect(block.getX(), block.getY(), block.getRightEdge(), block.getBottomEdge(), block.getPaint());
+
+            if (Collision(block, ball)) {
+                toRemove.add(block); // Mark for removal
+            }
         }
 
+        // Remove blocks AFTER iteration
+        if (!toRemove.isEmpty()) {
+            blocks.removeAll(toRemove);
+        }
 
+        // Draw ball and paddle
+        canvas.drawCircle(ball.getX(), ball.getY(), ball.getR(), ballPaint);
+        canvas.drawRect(paddle.getX(), paddle.getY(), paddle.getRightEdge(), paddle.getBottomEdge(), paddlePaint);
 
-        paint.setTextSize(50);
-        paint.setColor(Color.BLUE);
-        if(a.GetMidX()<r)
-            a.MoveWe(5);
-        if(a.GetMidX()>r)
-            a.MoveWe(-5);
+        // Handle movement and collision
+        Movement(ball);
+        Collision(paddle, ball);
+
+        if (paddle.getCenterX() < touchX) paddle.moveHorizontally(5);
+        if (paddle.getCenterX() > touchX) paddle.moveHorizontally(-5);
+
+        canvas.restore();
+
+        // ********** Bottom UI Section **********
+        canvas.save();
+        canvas.clipRect(0, gameAreaHeight, getWidth(), screenHeight); // Clip only the UI section
+        canvas.drawColor(Color.LTGRAY);
+
+        // Draw UI text
+        textPaint.setColor(Color.BLACK);
+        canvas.drawText("Level: " + levelNumber, 50, gameAreaHeight + 150, textPaint);
+
+        canvas.restore();
         invalidate();
-
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-         r = event.getX();
+        if (event.getY() < gameAreaHeight) { // Only move paddle inside game area
+            touchX = event.getX();
+        }
         return super.onTouchEvent(event);
     }
+    public boolean Collision(Objects a, Cirlce p) {
+        float ballLeft = p.getX() - p.getR();
+        float ballRight = p.getX() + p.getR();
+        float ballTop = p.getY() - p.getR();
+        float ballBottom = p.getY() + p.getR();
 
-    public void Collision(Objects a, Cirlce p){
-        if (p.getY() == a.getY()-p.getR() && p.getX()>=a.getX()-p.getR()&&p.getX()<=a.getWo()+p.getR())
-            p.setCMy();
-        if (p.getY() - p.getH() == a.getHo()-p.getR() && p.getX()>=a.getX()-p.getR()&&p.getX()<=a.getWo()+p.getR())
-            p.setCMy();
-        if (p.getX() == a.getX()-p.getR() && p.getY()>=a.getY()-p.getR()&&p.getY()<=a.getHo()+p.getR())
-            p.setCMx();
-        if (p.getX() - p.getW() == a.getWo()-p.getR() && p.getY()>=a.getY()-p.getR()&&p.getY()<=a.getHo()+p.getR())
-            p.setCMx();
+        float blockLeft = a.getX();
+        float blockRight = a.getX() + a.getWidth();
+        float blockTop = a.getY();
+        float blockBottom = a.getY() + a.getHeight();
+
+        boolean collisionDetected = false;
+
+        if (ballRight >= blockLeft && ballLeft <= blockRight && ballBottom >= blockTop && ballTop <= blockBottom) {
+            // Determine if it's a vertical or horizontal hit
+            float overlapLeft = ballRight - blockLeft;
+            float overlapRight = blockRight - ballLeft;
+            float overlapTop = ballBottom - blockTop;
+            float overlapBottom = blockBottom - ballTop;
+
+            if (Math.min(overlapTop, overlapBottom) < Math.min(overlapLeft, overlapRight)) {
+                p.setCMy(); // Reverse Y direction
+            } else {
+                p.setCMx(); // Reverse X direction
+            }
+
+            collisionDetected = true;
+        }
+
+        if (collisionDetected && a instanceof Block) {
+            Block block = (Block) a;
+            if (block.hitBlock() <= 0) {
+                blocks.remove(block); // Remove if durability is 0
+            }
+        }
+        return collisionDetected;
     }
-    public void Movement(Cirlce p){
-
+    public void Movement(Cirlce p) {
         p.setMMy();
-        if (p.getX() > getWidth() - p.getR() || p.getX() < p.getR())
-            p.setCMx();
-        if (p.getY() > getHeight() - p.getR() || p.getY() < p.getR())
-            p.setCMy();
-    }
-    public void Dissapear(Block a, Cirlce p) {
-        if (p.getY() == a.getY() - p.getR() && p.getX() >= a.getX() - p.getR() && p.getX() <= a.getWo() + p.getR()) {
-            p.setCMy();
-        a.UD();
+        p.setMMx();
+
+        // Bounce off left & right walls
+        if (p.getX() > getWidth() - p.getR() || p.getX() < p.getR()) {
+            p.setCMx(); // Reverse X direction
         }
-        if (p.getY() - p.getH() == a.getHo() - p.getR() && p.getX() >= a.getX() - p.getR() && p.getX() <= a.getWo() + p.getR()) {
-            p.setCMy();
-            a.UD();
+
+        // Bounce off top wall
+        if (p.getY() < p.getR()) {
+            p.setCMy(); // Reverse Y direction
         }
-        if (p.getX() == a.getX() - p.getR() && p.getY() >= a.getY() - p.getR() && p.getY() <= a.getHo() + p.getR()) {
-            p.setCMx();
-            a.UD();
+
+        // Ball hits the bottom (Game Over condition)
+        if (p.getY() > gameAreaHeight - p.getR()) {
+            p.setCMy(); // Reverse Y direction
         }
-        if (p.getX() - p.getW() == a.getWo() - p.getR() && p.getY() >= a.getY() - p.getR() && p.getY() <= a.getHo() + p.getR()) {
-            p.setCMx();
-            a.UD();
-        }
-    }
-    public void UC(Block a){
-        if (a.getU()==3)
-        a.setPaint(lv3);
-        else if (a.getU()==2)
-        a.setPaint(lv2);
-        else if (a.getU()==1)
-        a.setPaint(lv1);
-        else if (a.getU()>0)
-            a.setPaint(paint1);
-        else
-            a.setPaint(paint);
     }
 }
 

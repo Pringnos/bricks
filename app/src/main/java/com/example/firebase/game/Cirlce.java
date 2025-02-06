@@ -1,60 +1,33 @@
 package com.example.firebase.game;
 
-public class Cirlce extends Objects{
-    private float r;
-    private float mx;
-    private float my;
+public class Cirlce {
+    private float x, y, radius;
+    private float dx = 5;  // Default horizontal speed
+    private float dy = -5; // Default upward movement
 
-    public Cirlce(float x, float y, float r) {
-        super(x, y);
-        this.r = r;
-        this.w = r*2;
-        this.h = r*2;
-        mx=4;
-        my=4;
+    public Cirlce(float x, float y, float radius) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
     }
 
-    public float getR() {
-        return r;
+    public void setMMy() {
+        y += dy;  // Move vertically
     }
 
-    public float getMx() {
-        return mx;
+    public void setMMx() {
+        x += dx;  // Move horizontally
     }
 
-    public float getMy() {
-        return my;
+    public void setCMy() {
+        dy = -dy;  // Reverse Y direction
     }
 
-    public Cirlce setMy(float my) {
-        this.my = my;
-        return this;
+    public void setCMx() {
+        dx = -dx;  // Reverse X direction
     }
 
-    public Cirlce setMx(float mx) {
-        this.mx = mx;
-        return this;
-    }
-
-    public Cirlce setR(float r) {
-        this.r = r;
-        return this;
-    }
-    public Cirlce setCMy() {
-        this.my = my*-1;
-        return this;
-    }
-    public Cirlce setCMx() {
-        this.mx = mx*-1;
-        return this;
-    }
-    public Cirlce setMMx() {
-        setX(getX()+this.mx);
-        return this;
-    }
-    public Cirlce setMMy() {
-        setY(getY()+this.my);
-        return this;
-    }
-
+    public float getX() { return x; }
+    public float getY() { return y; }
+    public float getR() { return radius; }
 }

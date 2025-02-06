@@ -14,12 +14,18 @@ import com.example.firebase.R;
 
 public class Game extends AppCompatActivity {
     BoardGame boardGame;
+    int levelNumber;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_game);
-        boardGame = new BoardGame(this);
+
+        levelNumber = getIntent().getIntExtra("LEVEL_NUMBER", 1);
+
+        boardGame = new BoardGame(this, levelNumber);
+
         FrameLayout framelayout =(FrameLayout)findViewById(R.id.MFRM);
         framelayout.addView(boardGame);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

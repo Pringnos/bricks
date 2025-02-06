@@ -3,77 +3,92 @@ package com.example.firebase.game;
 public class Objects {
     private float x;
     private float y;
-    protected float h;
-    protected float w;
-
-
-
+    protected float w; // Width
+    protected float h; // Height
 
     public Objects(float x, float y, float width, float height) {
         this.x = x;
         this.y = y;
-        this.h = height;
         this.w = width;
+        this.h = height;
     }
-    public Objects(float x,float y) {
+
+    public Objects(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
-    public float getH() {
+    /** Returns height */
+    public float getHeight() {
         return h;
     }
-    public float getW() {
+
+    /** Returns width */
+    public float getWidth() {
         return w;
     }
-    public float getWo() {
-        return x+w;
+
+    /** Returns right edge of object */
+    public float getRightEdge() {
+        return x + w;
     }
 
-    public float getHo() {
-
-        return y+h;
+    /** Returns bottom edge of object */
+    public float getBottomEdge() {
+        return y + h;
     }
+
     public float getX() {
-
         return x;
     }
-    public float getY() {
 
+    public float getY() {
         return y;
     }
 
+    /** Move object horizontally */
+    public Objects moveHorizontally(float delta) {
+        this.x += delta;
+        return this;
+    }
 
+    /** Move object vertically */
+    public Objects moveVertically(float delta) {
+        this.y += delta;
+        return this;
+    }
+
+    /** Move object to horizontal center of `p` */
     public Objects MoveH(float p) {
-
-        this.y = p-(getH()/2);
+        this.y = p - (h / 2);
         return this;
     }
+
+    /** Move object to vertical center of `p` */
     public Objects MoveW(float p) {
-        this.x = p-(getW()/2);
-        return this;
-    }
-    public float GetMidY(){
-        return this.y+(getH()/2);
-    }
-
-    public Objects MoveWe(int q) {
-        this.x=this.x + q;
+        this.x = p - (w / 2);
         return this;
     }
 
+    /** Get center Y position */
+    public float getCenterY() {
+        return this.y + (h / 2);
+    }
+
+    /** Get center X position */
+    public float getCenterX() {
+        return this.x + (w / 2);
+    }
+
+    /** Set object Y position */
     public Objects setY(float y) {
         this.y = y;
         return this;
     }
 
+    /** Set object X position */
     public Objects setX(float x) {
         this.x = x;
         return this;
     }
-
-    public float GetMidX(){
-        return x+(getW()/2);
-    }
-
 }

@@ -1,31 +1,34 @@
 package com.example.firebase.game;
 
 import android.graphics.Paint;
-
-import java.lang.reflect.GenericArrayType;
 import java.util.Random;
 
-public class Block extends Objects{
-private Paint paint;
-private int U;
-private int P;
+public class Block extends Objects {
+    private Paint paint;
+    private int durability; // Rename 'U' to a clearer name
+    private int powerUpChance; // Rename 'P' for clarity
 
-
-    public Block(int x, int y, int Width, int Height, int U, Paint paint) {
-        super(x, y, Width, Height);
+    public Block(int x, int y, int width, int height, int durability, Paint paint) {
+        super(x, y, width, height);
         this.paint = paint;
-        Random rng = new Random();
-        P = rng.nextInt(16);
-        this.U = U;
+        this.durability = durability;
+        this.powerUpChance = new Random().nextInt(16); // Generates a random number from 0-15
     }
-    public int UD(){
-        return U--;
+
+    /** Reduces durability, ensuring it doesn't go below zero */
+    public int hitBlock() {
+        if (durability > 0) {
+            durability--;
+        }
+        return durability;
     }
-    public int getP() {
-        return P;
+
+    public int getPowerUpChance() {
+        return powerUpChance;
     }
-    public int getU() {
-        return U;
+
+    public int getDurability() {
+        return durability;
     }
 
     public Paint getPaint() {
@@ -35,5 +38,10 @@ private int P;
     public Block setPaint(Paint paint) {
         this.paint = paint;
         return this;
+    }
+
+    /** Checks if the block is broken */
+    public boolean isDestroyed() {
+        return durability <= 0;
     }
 }
