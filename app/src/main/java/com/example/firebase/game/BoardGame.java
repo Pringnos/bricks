@@ -4,22 +4,29 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Message;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
+import android.os.Handler;
+import java.util.logging.LogRecord;
 
 public class BoardGame extends View {
+    Context context;
     private int levelNumber;
     private List<Block> blocks;
     private float touchX = 300;
     private int screenHeight;
     private int gameAreaHeight; // New height limit for the game area
+    GameThread gameThread;
+    Handler gameHandler;
+    static final long fps=10;
 
     // Paint objects
-    private Paint ballPaint, paddlePaint, blockPaint, textPaint;
+    private Paint ballPaint, paddlePaint, blockPaint1,blockPaint2,blockPaint3, textPaint;
 
     // Game objects
     private Objects paddle;
@@ -27,8 +34,21 @@ public class BoardGame extends View {
 
     public BoardGame(Context context, int levelNumber) {
         super(context);
+        this.context = context;
         this.levelNumber = levelNumber;
+        gameThread = new GameThread();
+        gameThread.start();
         init(); // Initialize objects
+        gameHandler= new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(@NonNull Message msg)
+            {
+                invalidate();
+                return true;
+            }
+        }) ;
+
+
     }
 
     private void init() {
@@ -39,8 +59,12 @@ public class BoardGame extends View {
         paddlePaint = new Paint();
         paddlePaint.setColor(Color.BLACK);
 
-        blockPaint = new Paint();
-        blockPaint.setColor(Color.RED);
+        blockPaint1 = new Paint();
+        blockPaint1.setColor(Color.RED);
+        blockPaint2 = new Paint();
+        blockPaint2.setColor(Color.RED);
+        blockPaint3 = new Paint();
+        blockPaint3.setColor(Color.RED);
 
         textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
@@ -62,16 +86,16 @@ public class BoardGame extends View {
         int startX = 50;
 
         if (levelNumber == 1) {
-            blocks.add(new Block(startX, 100, blockWidth, blockHeight, 3, blockPaint));
-            blocks.add(new Block(startX + blockWidth + spacing, 100, blockWidth, blockHeight, 2, blockPaint));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1, blockPaint));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 3, blockPaint));
+            blocks.add(new Block(startX, 100, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + blockWidth + spacing, 100, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 3));
 
-            blocks.add(new Block(startX + (blockWidth / 2), 170, blockWidth, blockHeight, 2, blockPaint));
-            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 170, blockWidth, blockHeight, 1, blockPaint));
-            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2, blockPaint));
+            blocks.add(new Block(startX + (blockWidth / 2), 170, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 170, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2));
 
-            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 3, blockPaint));
+            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 3));
         }
     }
 
@@ -97,12 +121,16 @@ public class BoardGame extends View {
         // Temporary list to store blocks to remove
         List<Block> toRemove = new ArrayList<>();
 
+
+
+
         // Draw blocks and check collisions
         for (int i = 0; i < blocks.size(); i++) {
             Block block = blocks.get(i);
             canvas.drawRect(block.getX(), block.getY(), block.getRightEdge(), block.getBottomEdge(), block.getPaint());
 
-            if (Collision(block, ball)) {
+            if (Collision(block, ball)&&block.getDurability()<=0) {
+
                 toRemove.add(block); // Mark for removal
             }
         }
@@ -135,7 +163,10 @@ public class BoardGame extends View {
         canvas.drawText("Level: " + levelNumber, 50, gameAreaHeight + 150, textPaint);
 
         canvas.restore();
-        invalidate();
+
+
+
+        //invalidate();
     }
 
     @Override
@@ -176,7 +207,8 @@ public class BoardGame extends View {
 
         if (collisionDetected && a instanceof Block) {
             Block block = (Block) a;
-            if (block.hitBlock() <= 0) {
+            block.hitBlock();
+            if (block.getDurability() <= 0) {
                 blocks.remove(block); // Remove if durability is 0
             }
         }
@@ -199,6 +231,39 @@ public class BoardGame extends View {
         // Ball hits the bottom (Game Over condition)
         if (p.getY() > gameAreaHeight - p.getR()) {
             p.setCMy(); // Reverse Y direction
+        }
+    }
+
+    public class GameThread extends Thread
+    {
+        long steppersecond = 100/fps;
+        long starttime;
+        long sleeptime;
+        @Override
+        public void run() {
+            super.run();
+            while (true)
+            {
+                starttime = System.currentTimeMillis();
+                sleeptime = steppersecond - (System.currentTimeMillis()-starttime);
+                if(sleeptime>0) {
+                    try {
+
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                gameHandler.sendEmptyMessage(0);
+            }
+
         }
     }
 }
