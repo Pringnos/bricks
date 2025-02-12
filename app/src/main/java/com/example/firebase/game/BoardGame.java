@@ -26,7 +26,7 @@ public class BoardGame extends View {
     static final long fps=10;
 
     // Paint objects
-    private Paint ballPaint, paddlePaint, blockPaint1,blockPaint2,blockPaint3, textPaint;
+    private Paint ballPaint, paddlePaint, blockPaint1,blockPaint2,blockPaint3, textPaint,winPaint,losePaint;
 
     // Game objects
     private Objects paddle;
@@ -69,6 +69,14 @@ public class BoardGame extends View {
         textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(50);
+
+        winPaint = new Paint();
+        winPaint.setColor(Color.BLUE);
+        winPaint.setTextSize(80);
+
+        losePaint = new Paint();
+        losePaint.setColor(Color.GRAY);
+        losePaint.setTextSize(50);
 
         // Initialize game objects
         paddle = new Objects(180, 750, 200, 50);
@@ -164,8 +172,19 @@ public class BoardGame extends View {
 
         canvas.restore();
 
+        if (blocks.isEmpty())
+        {
+            ball.setDy(0);
+            ball.setDx(0);
+            canvas.drawText("YOU WIN",getWidth()/2,gameAreaHeight/2,winPaint);
+        }
 
+        if (ball.getY() > gameAreaHeight - ball.getR()) {
+            ball.setDy(0);
+            ball.setDx(0);
+            canvas.drawText("YOU LOSE",getWidth()/2,gameAreaHeight/2,losePaint);
 
+        }
         //invalidate();
     }
 
