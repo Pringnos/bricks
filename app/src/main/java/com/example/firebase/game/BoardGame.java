@@ -86,7 +86,7 @@ public class BoardGame extends View {
         losePaint.setTextSize(50);
 
         // Initialize game objects
-        paddle = new Objects(180, 750, 200, 50);
+        paddle = new Objects(180, gameAreaHeight - 50, 200, 50);
         ball = new Cirlce(500, 700, 30); // Move ball up
 
         initializeLevel();
@@ -125,7 +125,7 @@ public class BoardGame extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         screenHeight = h;
-        gameAreaHeight = (int) (screenHeight * 0.8); // 80% for game, 20% for UI
+        gameAreaHeight = (int) (screenHeight * 0.93); // 80% for game, 20% for UI
 
         paddle = new Objects(w / 2 - 50, gameAreaHeight - 50, 200, 40);
         ball = new Cirlce(w / 2, gameAreaHeight - 80, 30);
@@ -182,7 +182,7 @@ public class BoardGame extends View {
 
         // Draw UI text
         textPaint.setColor(Color.BLACK);
-        canvas.drawText("Level: " + levelNumber, 50, gameAreaHeight + 150, textPaint);
+        canvas.drawText("Level: " + levelNumber, 50, gameAreaHeight + 100, textPaint);
 
         canvas.restore();
 
@@ -190,14 +190,14 @@ public class BoardGame extends View {
         {
             ball.setDy(0);
             ball.setDx(0);
-            canvas.drawText("YOU WIN",getWidth()/2,gameAreaHeight/2,winPaint);
+            canvas.drawText("YOU WIN", (float) getWidth() /2 - 130, (float) gameAreaHeight /2,winPaint);
             isOver = true;
         }
 
         if (ball.getY() > gameAreaHeight - ball.getR()) {
             ball.setDy(0);
             ball.setDx(0);
-            canvas.drawText("YOU LOSE",getWidth()/2,gameAreaHeight/2,losePaint);
+            canvas.drawText("YOU LOSE", (float) getWidth() /2 -130, (float) gameAreaHeight /2,losePaint);
             isOver = true;
 
         }
