@@ -1,6 +1,7 @@
 package com.example.firebase.game;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,6 +13,10 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import android.os.Handler;
+
+import com.example.firebase.MainActivity;
+import com.example.firebase.Register;
+
 import java.util.logging.LogRecord;
 
 public class BoardGame extends View {
@@ -24,6 +29,7 @@ public class BoardGame extends View {
     GameThread gameThread;
     Handler gameHandler;
     static final long fps=10;
+    private boolean isOver = false;
 
     // Paint objects
     private Paint ballPaint, paddlePaint, blockPaint1,blockPaint2,blockPaint3, textPaint,winPaint,losePaint;
@@ -39,6 +45,7 @@ public class BoardGame extends View {
         gameThread = new GameThread();
         gameThread.start();
         init(); // Initialize objects
+
         gameHandler= new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(@NonNull Message msg)
@@ -94,8 +101,15 @@ public class BoardGame extends View {
         int startX = 50;
 
         if (levelNumber == 1) {
-            blocks.add(new Block(startX, 100, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + blockWidth + spacing, 100, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX, 100, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 170, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2));
+
+            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 3));
+
+        }
+        if (levelNumber == 2) {
+
             blocks.add(new Block(startX + 2 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1));
             blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 3));
 
@@ -177,12 +191,14 @@ public class BoardGame extends View {
             ball.setDy(0);
             ball.setDx(0);
             canvas.drawText("YOU WIN",getWidth()/2,gameAreaHeight/2,winPaint);
+            isOver = true;
         }
 
         if (ball.getY() > gameAreaHeight - ball.getR()) {
             ball.setDy(0);
             ball.setDx(0);
             canvas.drawText("YOU LOSE",getWidth()/2,gameAreaHeight/2,losePaint);
+            isOver = true;
 
         }
         //invalidate();
@@ -190,8 +206,25 @@ public class BoardGame extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getY() < gameAreaHeight) { // Only move paddle inside game area
-            touchX = event.getX();
+        if (!isOver) {
+            if (event.getY() < gameAreaHeight) { // Only move paddle inside game area
+                touchX = event.getX();
+            }
+
+        }
+        if (isOver)
+        {
+            if (ball.getY() >= gameAreaHeight - ball.getR()) {
+                Intent intent = new Intent(BoardGame.this.getContext(), MainActivity.class);
+                intent.putExtra("levelNumber",levelNumber);
+
+            }
+            if (blocks.isEmpty()){
+                levelNumber++;
+                isOver = false;
+                init();
+                invalidate();
+            }
         }
         return super.onTouchEvent(event);
     }
