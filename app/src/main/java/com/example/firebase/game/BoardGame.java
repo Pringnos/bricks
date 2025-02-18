@@ -101,7 +101,7 @@ public class BoardGame extends View {
         int spacing = 20; // Horizontal spacing between blocks
         int startX = 50;
 
-        if (levelNumber == 4) {
+        if (levelNumber == 1) {
             blocks.add(new Block(startX, 100, blockWidth, blockHeight, 1));
             blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 100, blockWidth, blockHeight, 1));
 
@@ -132,10 +132,10 @@ public class BoardGame extends View {
             blocks.add(new Block(startX + (blockWidth / 2)+ 1 * (blockWidth + spacing), 310 + 3 * spacing, blockWidth, blockHeight, 4));
 
 
-        }if (levelNumber == 1) {
+        }if (levelNumber == 4) {
             ball.setDy(6);
             ball.setDx(6);
-            PaddleHight = 50;
+            PaddleHight = 20;
             blocks.add(new Block(startX + blockWidth - 2 * spacing , 100, 100, blockHeight, 1));
             blocks.add(new Block(startX + blockWidth - 2 * spacing + 2 * (100 + spacing) + 50 , 100, 100, blockHeight, 1));
             blocks.add(new Block(startX + (blockWidth + spacing) + 10, 170, 100, blockHeight, 2));
