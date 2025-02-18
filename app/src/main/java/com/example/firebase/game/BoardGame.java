@@ -101,7 +101,7 @@ public class BoardGame extends View {
         int spacing = 20; // Horizontal spacing between blocks
         int startX = 50;
 
-        if (levelNumber == 3) {
+        if (levelNumber == 4) {
             blocks.add(new Block(startX, 100, blockWidth, blockHeight, 1));
             blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 100, blockWidth, blockHeight, 1));
 
@@ -120,9 +120,41 @@ public class BoardGame extends View {
             blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2));
 
             blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 3));
+        }if (levelNumber == 3) {
+            ball.setDy(-6);
+            ball.setDx(6);
+            blocks.add(new Block(startX, 100, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth / 2), 170 + spacing, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170 + spacing, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 1 * (blockWidth ), 240 + 2 * spacing, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 240 + 2 * spacing, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + (blockWidth / 2)+ 1 * (blockWidth + spacing), 310 + 3 * spacing, blockWidth, blockHeight, 4));
+
+
         }if (levelNumber == 1) {
-            ball.setDy(7);
-            ball.setDx(7);
+            ball.setDy(6);
+            ball.setDx(6);
+            PaddleHight = 50;
+            blocks.add(new Block(startX + blockWidth - 2 * spacing , 100, 100, blockHeight, 1));
+            blocks.add(new Block(startX + blockWidth - 2 * spacing + 2 * (100 + spacing) + 50 , 100, 100, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth + spacing) + 10, 170, 100, blockHeight, 2));
+            blocks.add(new Block(startX + 40, 170, 100, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing) - 10, 170, 100, blockHeight, 3));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 130, 170, 100, blockHeight, 2));
+            blocks.add(new Block(startX + (blockWidth / 2) + (blockWidth + spacing), 240, 120, blockHeight, 2));
+            blocks.add(new Block(startX - spacing, 240, 120, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 190, 240, 120, blockHeight, 2));
+            blocks.add(new Block(startX + 40, 310, 100, blockHeight, 2));
+            blocks.add(new Block(startX + (blockWidth + spacing) + 10, 310, 100, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing) - 10, 310, 100, blockHeight, 3));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 130, 310, 100, blockHeight, 2));
+            blocks.add(new Block(startX + blockWidth - 2 * spacing , 380, 100, blockHeight, 1));
+            blocks.add(new Block(startX + blockWidth - 2 * spacing + 2 * (100 + spacing) + 50 , 380, 100, blockHeight, 1));
+        }if (levelNumber == 5) {
+            ball.setDy(6);
+            ball.setDx(6);
+            PaddleHight = 50;
 
             blocks.add(new Block(startX + (blockWidth + spacing), 100, blockWidth, blockHeight, 2));
             blocks.add(new Block(startX + 2 * (blockWidth + spacing), 100, blockWidth, blockHeight, 3));
@@ -137,21 +169,9 @@ public class BoardGame extends View {
             blocks.add(new Block(startX + 3 * (blockWidth + spacing), 240, blockWidth, blockHeight, 4));
 
             blocks.add(new Block(startX, 310, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + (blockWidth - spacing), 310, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 2 * blockWidth - spacing, 310, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + (blockWidth + spacing), 310, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 310, blockWidth, blockHeight, 3));
 
-        }if (levelNumber == 4) {
-            ball.setDy(7);
-            ball.setDx(7);
-            PaddleHight = 10;
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 3));
-
-            blocks.add(new Block(startX + (blockWidth / 2), 170, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 170, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2));
-
-            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 3));
         }
     }
 
@@ -162,8 +182,9 @@ public class BoardGame extends View {
         gameAreaHeight = (int) (screenHeight * 0.93);
 
         paddle = new Objects(w / 2 - 50, gameAreaHeight - 50 - PaddleHight, 200, 40);
-        ball = new Cirlce(w / 2, gameAreaHeight - 105, 30);
+        ball = new Cirlce(w / 2, gameAreaHeight - 100 - PaddleHight, 30);
     }
+
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
