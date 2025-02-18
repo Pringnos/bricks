@@ -30,6 +30,7 @@ public class BoardGame extends View {
     Handler gameHandler;
     static final long fps=10;
     private boolean isOver = false;
+    int PaddleHight = 0;
 
     // Paint objects
     private Paint ballPaint, paddlePaint, blockPaint1,blockPaint2,blockPaint3, textPaint,winPaint,losePaint;
@@ -100,16 +101,49 @@ public class BoardGame extends View {
         int spacing = 20; // Horizontal spacing between blocks
         int startX = 50;
 
-        if (levelNumber == 1) {
+        if (levelNumber == 3) {
             blocks.add(new Block(startX, 100, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 170, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 100, blockWidth, blockHeight, 1));
+
             blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2));
 
-            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 1));
 
         }
         if (levelNumber == 2) {
 
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 3));
+
+            blocks.add(new Block(startX + (blockWidth / 2), 170, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 170, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2));
+
+            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 3));
+        }if (levelNumber == 1) {
+            ball.setDy(7);
+            ball.setDx(7);
+
+            blocks.add(new Block(startX + (blockWidth + spacing), 100, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 100, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 4));
+
+            blocks.add(new Block(startX, 170, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 170, blockWidth, blockHeight, 4));
+
+            blocks.add(new Block(startX, 240, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth + spacing), 240, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 240, blockWidth, blockHeight, 4));
+
+            blocks.add(new Block(startX, 310, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth - spacing), 310, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * blockWidth - spacing, 310, blockWidth, blockHeight, 3));
+
+        }if (levelNumber == 4) {
+            ball.setDy(7);
+            ball.setDx(7);
+            PaddleHight = 10;
             blocks.add(new Block(startX + 2 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1));
             blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 3));
 
@@ -125,10 +159,10 @@ public class BoardGame extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         screenHeight = h;
-        gameAreaHeight = (int) (screenHeight * 0.93); // 80% for game, 20% for UI
+        gameAreaHeight = (int) (screenHeight * 0.93);
 
-        paddle = new Objects(w / 2 - 50, gameAreaHeight - 50, 200, 40);
-        ball = new Cirlce(w / 2, gameAreaHeight - 80, 30);
+        paddle = new Objects(w / 2 - 50, gameAreaHeight - 50 - PaddleHight, 200, 40);
+        ball = new Cirlce(w / 2, gameAreaHeight - 105, 30);
     }
 
     @Override

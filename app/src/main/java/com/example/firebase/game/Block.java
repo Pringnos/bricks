@@ -6,14 +6,14 @@ import java.util.Random;
 
 public class Block extends Objects {
     private Paint paint;
-    private int durability; // Rename 'U' to a clearer name
-    private int powerUpChance; // Rename 'P' for clarity
+    private int durability;
+    private int powerUpChance;
 
     public Block(int x, int y, int width, int height, int durability) {
         super(x, y, width, height);
         paint = new Paint();
         this.durability = durability;
-        this.powerUpChance = new Random().nextInt(16); // Generates a random number from 0-15
+        this.powerUpChance = new Random().nextInt(16);
         if (durability==1)
             paint.setColor(Color.YELLOW);
         else if (durability==2)
@@ -24,7 +24,7 @@ public class Block extends Objects {
             paint.setColor(Color.BLACK);
     }
 
-    /** Reduces durability, ensuring it doesn't go below zero */
+
     public int hitBlock() {
         if (durability > 0) {
             durability--;
@@ -54,7 +54,7 @@ public class Block extends Objects {
 
 
 
-    /** Checks if the block is broken */
+
     public boolean isDestroyed() {
         return durability <= 0;
     }
