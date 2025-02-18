@@ -15,9 +15,6 @@ import java.util.List;
 import android.os.Handler;
 
 import com.example.firebase.MainActivity;
-import com.example.firebase.Register;
-
-import java.util.logging.LogRecord;
 
 public class BoardGame extends View {
     Context context;
@@ -29,7 +26,8 @@ public class BoardGame extends View {
     GameThread gameThread;
     Handler gameHandler;
     static final long fps=10;
-    private boolean isOver = false;
+    private boolean GameLose = false;
+    private boolean GameWin = false;
     int PaddleHight = 0;
 
     // Paint objects
@@ -246,14 +244,15 @@ public class BoardGame extends View {
             ball.setDy(0);
             ball.setDx(0);
             canvas.drawText("YOU WIN", (float) getWidth() /2 - 130, (float) gameAreaHeight /2,winPaint);
-            isOver = true;
+            GameWin = true;
         }
 
         if (ball.getY() > gameAreaHeight - ball.getR()) {
             ball.setDy(0);
             ball.setDx(0);
             canvas.drawText("YOU LOSE", (float) getWidth() /2 -130, (float) gameAreaHeight /2,losePaint);
-            isOver = true;
+            GameLose = true;
+
 
         }
         //invalidate();
@@ -261,26 +260,23 @@ public class BoardGame extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!isOver) {
+        if (!GameWin && !GameLose) {
             if (event.getY() < gameAreaHeight) { // Only move paddle inside game area
                 touchX = event.getX();
             }
 
         }
-        if (isOver)
-        {
-            if (ball.getY() >= gameAreaHeight - ball.getR()) {
-                Intent intent = new Intent(BoardGame.this.getContext(), MainActivity.class);
-                intent.putExtra("levelNumber",levelNumber);
-
-            }
-            if (blocks.isEmpty()){
+        if (GameLose) {
+            Intent intent = new Intent(BoardGame.this.getContext(), MainActivity.class);
+            intent.putExtra("levelNumber", levelNumber);
+        }
+            if (GameWin) {
                 levelNumber++;
-                isOver = false;
+                GameWin = false;
                 init();
                 invalidate();
             }
-        }
+
         return super.onTouchEvent(event);
     }
     public boolean Collision(Objects a, Cirlce p) {
