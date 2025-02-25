@@ -5,7 +5,11 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -15,8 +19,10 @@ import java.util.List;
 import android.os.Handler;
 
 import com.example.firebase.MainActivity;
+import com.example.firebase.R;
 
 public class BoardGame extends View {
+
     Context context;
     private int levelNumber;
     private List<Block> blocks;
@@ -25,10 +31,14 @@ public class BoardGame extends View {
     private int gameAreaHeight; // New height limit for the game area
     GameThread gameThread;
     Handler gameHandler;
-    static final long fps=10;
+    static final long fps=20;
     private boolean GameLose = false;
     private boolean GameWin = false;
     int PaddleHight = 0;
+
+
+
+
 
     // Paint objects
     private Paint ballPaint, paddlePaint, blockPaint1,blockPaint2,blockPaint3, textPaint,winPaint,losePaint;
@@ -56,7 +66,14 @@ public class BoardGame extends View {
 
 
     }
+    public void destroy() {
+        if (gameThread != null && gameThread.isAlive()) {
+            gameThread.interrupt(); // Stop the game thread
+        }
+        Audio.release(); // Release sounds
+        Log.d("BoardGame", "Resources released and game thread stopped.");
 
+    }
     private void init() {
         // Initialize paint objects
         ballPaint = new Paint();
@@ -87,9 +104,17 @@ public class BoardGame extends View {
         // Initialize game objects
         paddle = new Objects(180, gameAreaHeight - 50, 200, 50);
         ball = new Cirlce(500, 700, 30); // Move ball up
+        Audio.init(context);
+
+        // Load sounds
+        Audio.loadSound(context, "bounce", R.raw.bounce1);
+        Audio.loadSound(context, "win", R.raw.win);
+        Audio.loadSound(context, "pop", R.raw.pop);
+        Audio.loadSound(context, "gameover", R.raw.gameover);
 
         initializeLevel();
     }
+
 
     private void initializeLevel() {
         blocks = new ArrayList<>();
@@ -205,7 +230,7 @@ public class BoardGame extends View {
             canvas.drawRect(block.getX(), block.getY(), block.getRightEdge(), block.getBottomEdge(), block.getPaint());
 
             if (Collision(block, ball)&&block.getDurability()<=0) {
-
+                Audio.playSound("pop", 1.0f);
                 toRemove.add(block); // Mark for removal
             }
         }
@@ -241,6 +266,9 @@ public class BoardGame extends View {
 
         if (blocks.isEmpty())
         {
+            if(!GameWin){
+            Audio.playSound("Win", 1.0f);
+            }
             ball.setDy(0);
             ball.setDx(0);
             canvas.drawText("YOU WIN", (float) getWidth() /2 - 130, (float) gameAreaHeight /2,winPaint);
@@ -250,6 +278,11 @@ public class BoardGame extends View {
         if (ball.getY() > gameAreaHeight - ball.getR()) {
             ball.setDy(0);
             ball.setDx(0);
+            if(!GameLose)
+            {
+                Audio.playSound("gameover", 1.0f);
+            }
+
             canvas.drawText("YOU LOSE", (float) getWidth() /2 -130, (float) gameAreaHeight /2,losePaint);
             GameLose = true;
 
@@ -267,8 +300,7 @@ public class BoardGame extends View {
 
         }
         if (GameLose) {
-            Intent intent = new Intent(BoardGame.this.getContext(), MainActivity.class);
-            intent.putExtra("levelNumber", levelNumber);
+
         }
             if (GameWin) {
                 levelNumber++;
@@ -303,8 +335,8 @@ public class BoardGame extends View {
                 p.setCMy(); // Reverse Y direction
             } else {
                 p.setCMx(); // Reverse X direction
-            }
 
+            }
             collisionDetected = true;
         }
 
@@ -312,7 +344,17 @@ public class BoardGame extends View {
             Block block = (Block) a;
             block.hitBlock();
             if (block.getDurability() <= 0) {
+                Audio.playSound("pop", 1.0f);
                 blocks.remove(block); // Remove if durability is 0
+            }
+            if (block.getDurability() > 0){
+                Audio.playSound("bounce", 1.0f);
+            }
+        }
+        if (collisionDetected && !(a instanceof Block)) {
+            if(!GameLose)
+            {
+                Audio.playSound("bounce", 1.0f);
             }
         }
         return collisionDetected;
@@ -324,19 +366,29 @@ public class BoardGame extends View {
         // Bounce off left & right walls
         if (p.getX() > getWidth() - p.getR() || p.getX() < p.getR()) {
             p.setCMx(); // Reverse X direction
+            if(!GameLose)
+            {
+                Audio.playSound("bounce", 1.0f);
+            }
+
         }
 
         // Bounce off top wall
         if (p.getY() < p.getR()) {
             p.setCMy(); // Reverse Y direction
+            if(!GameLose)
+            {
+                Audio.playSound("bounce", 1.0f);
+            }
+
         }
 
         // Ball hits the bottom (Game Over condition)
         if (p.getY() > gameAreaHeight - p.getR()) {
             p.setCMy(); // Reverse Y direction
         }
-    }
 
+    }
     public class GameThread extends Thread
     {
         long steppersecond = 100/fps;
@@ -368,7 +420,11 @@ public class BoardGame extends View {
             }
 
         }
+
+
     }
+
+
 }
 
 

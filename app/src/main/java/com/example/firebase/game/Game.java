@@ -33,5 +33,14 @@ public class Game extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
     }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (boardGame != null) {
+            boardGame.destroy();  // Clean up game resources
+        }
+    }
+
 }
