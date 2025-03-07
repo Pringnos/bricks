@@ -82,13 +82,6 @@ public class BoardGame extends View {
         paddlePaint = new Paint();
         paddlePaint.setColor(Color.BLACK);
 
-        blockPaint1 = new Paint();
-        blockPaint1.setColor(Color.RED);
-        blockPaint2 = new Paint();
-        blockPaint2.setColor(Color.RED);
-        blockPaint3 = new Paint();
-        blockPaint3.setColor(Color.RED);
-
         textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(50);
