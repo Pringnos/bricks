@@ -26,6 +26,7 @@ public class BoardGame extends View {
     Context context;
     private int levelNumber;
     private List<Block> blocks;
+    private List<Cirlce> Cirlces;
     private float touchX = 300;
     private int screenHeight;
     private int gameAreaHeight; // New height limit for the game area
@@ -41,7 +42,7 @@ public class BoardGame extends View {
 
 
     // Paint objects
-    private Paint ballPaint, paddlePaint, blockPaint1,blockPaint2,blockPaint3, textPaint,winPaint,losePaint;
+    private Paint ballPaint, paddlePaint, textPaint,winPaint,losePaint, powerPaint;
 
     // Game objects
     private Objects paddle;
@@ -66,14 +67,15 @@ public class BoardGame extends View {
 
 
     }
-    public void destroy() {
-        if (gameThread != null && gameThread.isAlive()) {
-            gameThread.interrupt(); // Stop the game thread
-        }
-        Audio.release(); // Release sounds
-        Log.d("BoardGame", "Resources released and game thread stopped.");
+    //    public void destroy() {
+    //        if (gameThread != null && gameThread.isAlive()) {
+    //            gameThread.interrupt(); // Stop the game thread
+    //        }
+    //        Audio.release();
+    //
+    //
+    //    }
 
-    }
     private void init() {
         // Initialize paint objects
         ballPaint = new Paint();
@@ -82,12 +84,8 @@ public class BoardGame extends View {
         paddlePaint = new Paint();
         paddlePaint.setColor(Color.BLACK);
 
-        blockPaint1 = new Paint();
-        blockPaint1.setColor(Color.RED);
-        blockPaint2 = new Paint();
-        blockPaint2.setColor(Color.RED);
-        blockPaint3 = new Paint();
-        blockPaint3.setColor(Color.RED);
+        powerPaint = new Paint();
+        powerPaint.setColor(Color.rgb(127,0,255));
 
         textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
@@ -104,6 +102,7 @@ public class BoardGame extends View {
         // Initialize game objects
         paddle = new Objects(180, gameAreaHeight - 50, 200, 50);
         ball = new Cirlce(500, 700, 30); // Move ball up
+        Audio.release();
         Audio.init(context);
 
         // Load sounds
@@ -118,12 +117,11 @@ public class BoardGame extends View {
 
     private void initializeLevel() {
         blocks = new ArrayList<>();
-
+        Cirlces = new ArrayList<>();
         int blockWidth = 150;
         int blockHeight = 50;
         int spacing = 20; // Horizontal spacing between blocks
         int startX = 50;
-
         if (levelNumber == 1) {
             blocks.add(new Block(startX, 100, blockWidth, blockHeight, 1));
             blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 100, blockWidth, blockHeight, 1));
@@ -239,6 +237,7 @@ public class BoardGame extends View {
         if (!toRemove.isEmpty()) {
             blocks.removeAll(toRemove);
         }
+
 
         // Draw ball and paddle
         canvas.drawCircle(ball.getX(), ball.getY(), ball.getR(), ballPaint);
