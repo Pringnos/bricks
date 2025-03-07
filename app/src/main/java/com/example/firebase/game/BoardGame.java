@@ -49,7 +49,14 @@ public class BoardGame extends View {
 
     public BoardGame(Context context, int levelNumber) {
         super(context);
-        Audio.init(context);
+
+
+            Audio.init(context);
+            Audio.loadSound(context, "bounce", R.raw.bounce1);
+            Audio.loadSound(context, "win", R.raw.win);
+            Audio.loadSound(context, "pop", R.raw.pop);
+            Audio.loadSound(context, "gameover", R.raw.gameover);
+
         this.context = context;
         this.levelNumber = levelNumber;
         gameThread = new GameThread();
@@ -100,10 +107,6 @@ public class BoardGame extends View {
         ball = new Cirlce(500, 700, 30); // Move ball u
 
         // Load sounds
-        Audio.loadSound(context, "bounce", R.raw.bounce1);
-        Audio.loadSound(context, "win", R.raw.win);
-        Audio.loadSound(context, "pop", R.raw.pop);
-        Audio.loadSound(context, "gameover", R.raw.gameover);
 
         initializeLevel();
     }
