@@ -204,6 +204,11 @@ public class BoardGame extends View {
         screenHeight = h;
         gameAreaHeight = (int) (screenHeight * 0.93);
 
+        // Reset PaddleHight unless changed in the level
+        if (levelNumber != 4 && levelNumber != 5) {
+            PaddleHight = 0; // Ensure default height
+        }
+
         paddle = new Objects(w / 2 - 50, gameAreaHeight - 50 - PaddleHight, 200, 40);
         ball = new Cirlce(w / 2, gameAreaHeight - 100 - PaddleHight, 30);
     }
