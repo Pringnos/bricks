@@ -1,6 +1,7 @@
 package com.example.firebase.game;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import androidx.activity.EdgeToEdge;
@@ -39,6 +40,8 @@ public class Game extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (boardGame != null) {
+            Audio.release(); // Release sounds
+            Log.d("BoardGame", "Resources released and game thread stopped.");
             boardGame.destroy();  // Clean up game resources
         }
     }
