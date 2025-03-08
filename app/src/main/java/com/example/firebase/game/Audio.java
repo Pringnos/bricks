@@ -17,6 +17,8 @@ public class Audio {
 
     // Initialize SoundPool
     public static void init(Context context) {
+        if (soundPool != null) return;
+
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .setUsage(AudioAttributes.USAGE_GAME)
@@ -26,9 +28,17 @@ public class Audio {
                 .setMaxStreams(10)  // Max simultaneous sounds
                 .setAudioAttributes(audioAttributes)
                 .build();
+
+        soundPool.setOnLoadCompleteListener((soundPool, sampleId, status) -> {
+            if (status == 0) { // Success
+                isLoaded = true;
+            }
+        });
     }
 
     public static void playSound(String soundName, float volume) {
+        if (!isLoaded) return;
+
         Integer soundId = soundMap.get(soundName);
         if (soundId != null) {
             float finalVolume = Math.min(Math.max(volume, 0.0f), 1.0f); // Clamp volume
@@ -36,6 +46,8 @@ public class Audio {
         }
     }
     public static void loadSound(Context context, String soundName, int resId) {
+        if (soundMap.containsKey(soundName)) return;
+
         int soundId = soundPool.load(context, resId, 1);
         soundMap.put(soundName, soundId);
     }

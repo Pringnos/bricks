@@ -1,13 +1,9 @@
 package com.example.firebase.game;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.AudioAttributes;
-import android.media.SoundPool;
-import android.os.Build;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -17,9 +13,6 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import android.os.Handler;
-
-import com.example.firebase.MainActivity;
-import com.example.firebase.R;
 
 public class BoardGame extends View {
 
@@ -37,9 +30,6 @@ public class BoardGame extends View {
     int PaddleHight = 0;
 
 
-
-
-
     // Paint objects
     private Paint ballPaint, paddlePaint, blockPaint1,blockPaint2,blockPaint3, textPaint,winPaint,losePaint;
 
@@ -49,13 +39,6 @@ public class BoardGame extends View {
 
     public BoardGame(Context context, int levelNumber) {
         super(context);
-
-
-            Audio.init(context);
-            Audio.loadSound(context, "bounce", R.raw.bounce1);
-            Audio.loadSound(context, "win", R.raw.win);
-            Audio.loadSound(context, "pop", R.raw.pop);
-            Audio.loadSound(context, "gameover", R.raw.gameover);
 
         this.context = context;
         this.levelNumber = levelNumber;
@@ -75,14 +58,36 @@ public class BoardGame extends View {
 
     }
     public void destroy() {
-        if (gameThread != null && gameThread.isAlive()) {
-            gameThread.interrupt(); // Stop the game thread
+        if (gameThread != null) {
+            gameThread.stopThread();
+            try {
+                gameThread.join(); // Ensures the thread fully stops before continuing
+            } catch (InterruptedException e) {
+                Log.e("BoardGame", "Game thread interrupted during shutdown", e);
+            }
+            gameThread = null;  // Only set to null after stopping fully
         }
         Audio.release(); // Release sounds
         Log.d("BoardGame", "Resources released and game thread stopped.");
-
     }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        destroy();
+    }
+
     private void init() {
+        // Stop previous game thread (if any)
+        if (gameThread != null && gameThread.isRunning) {
+            gameThread.stopThread();
+            try {
+                gameThread.join(); // Ensures the old thread fully stops
+            } catch (InterruptedException e) {
+                Log.e("BoardGame", "Game thread interrupted during restart", e);
+            }
+            gameThread = null;
+        }
         // Initialize paint objects
         ballPaint = new Paint();
         ballPaint.setColor(Color.BLUE);
@@ -102,15 +107,13 @@ public class BoardGame extends View {
         losePaint.setColor(Color.GRAY);
         losePaint.setTextSize(50);
 
-        // Initialize game objects
-        paddle = new Objects(180, gameAreaHeight - 50, 200, 50);
-        ball = new Cirlce(500, 700, 30); // Move ball u
-
-        // Load sounds
-
         initializeLevel();
+        // Start new game thread. Ensure only one thread runs.
+        if (gameThread == null || !gameThread.isAlive()) {
+            gameThread = new GameThread();
+            gameThread.start();
+        }
     }
-
 
     private void initializeLevel() {
         blocks = new ArrayList<>();
@@ -146,9 +149,9 @@ public class BoardGame extends View {
             blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1));
             blocks.add(new Block(startX + (blockWidth / 2), 170 + spacing, blockWidth, blockHeight, 2));
             blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170 + spacing, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 1 * (blockWidth ), 240 + 2 * spacing, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + (blockWidth), 240 + 2 * spacing, blockWidth, blockHeight, 3));
             blocks.add(new Block(startX + 2 * (blockWidth + spacing), 240 + 2 * spacing, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + (blockWidth / 2)+ 1 * (blockWidth + spacing), 310 + 3 * spacing, blockWidth, blockHeight, 4));
+            blocks.add(new Block(startX + (blockWidth / 2)+ (blockWidth + spacing), 310 + 3 * spacing, blockWidth, blockHeight, 4));
 
 
         }if (levelNumber == 4) {
@@ -200,15 +203,14 @@ public class BoardGame extends View {
         screenHeight = h;
         gameAreaHeight = (int) (screenHeight * 0.93);
 
-        // Reset PaddleHight unless changed in the level
+        // Reset Paddle Height unless changed in the level
         if (levelNumber != 4 && levelNumber != 5) {
             PaddleHight = 0; // Ensure default height
         }
 
-        paddle = new Objects(w / 2 - 50, gameAreaHeight - 50 - PaddleHight, 200, 40);
-        ball = new Cirlce(w / 2, gameAreaHeight - 100 - PaddleHight, 30);
+        paddle = new Objects((float) w / 2 - 50, gameAreaHeight - 50 - PaddleHight, 200, 40);
+        ball = new Cirlce((float) w / 2, gameAreaHeight - 100 - PaddleHight, 30);
     }
-
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
@@ -221,9 +223,6 @@ public class BoardGame extends View {
 
         // Temporary list to store blocks to remove
         List<Block> toRemove = new ArrayList<>();
-
-
-
 
         // Draw blocks and check collisions
         for (int i = 0; i < blocks.size(); i++) {
@@ -268,7 +267,7 @@ public class BoardGame extends View {
         if (blocks.isEmpty())
         {
             if(!GameWin){
-            Audio.playSound("Win", 1.0f);
+                Audio.playSound("Win", 1.0f);
             }
             ball.setDy(0);
             ball.setDx(0);
@@ -390,41 +389,35 @@ public class BoardGame extends View {
         }
 
     }
-    public class GameThread extends Thread
-    {
-        long steppersecond = 100/fps;
-        long starttime;
-        long sleeptime;
+    public class GameThread extends Thread {
+        private boolean isRunning = true;  // Controls loop execution
+        long stepPerSecond = 100 / fps;
+        long startTime;
+        long sleepTime;
+
         @Override
         public void run() {
             super.run();
-            while (true)
-            {
-                starttime = System.currentTimeMillis();
-                sleeptime = steppersecond - (System.currentTimeMillis()-starttime);
-                if(sleeptime>0) {
+            while (isRunning) {
+                startTime = System.currentTimeMillis();
+                sleepTime = stepPerSecond - (System.currentTimeMillis() - startTime);
+                if (sleepTime > 0) {
                     try {
-
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                else {
-                    try {
-                        Thread.sleep(10);
+                        Thread.sleep(sleepTime);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
                 gameHandler.sendEmptyMessage(0);
             }
-
+            Log.d("GameThread", "Thread stopped.");
         }
 
-
+        public void stopThread() {
+            isRunning = false;
+            interrupt(); // Interrupts sleep if it's waiting
+        }
     }
-
 
 }
 

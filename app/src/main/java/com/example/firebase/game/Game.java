@@ -23,6 +23,12 @@ public class Game extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_game);
 
+        Audio.init(this);
+        Audio.loadSound(this, "bounce", R.raw.bounce1);
+        Audio.loadSound(this, "win", R.raw.win);
+        Audio.loadSound(this, "pop", R.raw.pop);
+        Audio.loadSound(this, "gameover", R.raw.gameover);
+
         levelNumber = getIntent().getIntExtra("LEVEL_NUMBER", 1);
 
         boardGame = new BoardGame(this, levelNumber);
@@ -40,10 +46,10 @@ public class Game extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (boardGame != null) {
-            Audio.release(); // Release sounds
-            Log.d("BoardGame", "Resources released and game thread stopped.");
             boardGame.destroy();  // Clean up game resources
         }
+        Audio.release(); // Release sounds
+        Log.d("BoardGame", "Resources released and game thread stopped.");
     }
 
 }
