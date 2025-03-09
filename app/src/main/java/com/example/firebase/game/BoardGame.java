@@ -26,6 +26,8 @@ public class BoardGame extends View {
     Context context;
     private int levelNumber;
     private List<Block> blocks;
+    private List<Cirlce> Power;
+    private List<Cirlce> PBalls;
     private float touchX = 300;
     private int screenHeight;
     private int gameAreaHeight; // New height limit for the game area
@@ -35,6 +37,7 @@ public class BoardGame extends View {
     private boolean GameLose = false;
     private boolean GameWin = false;
     int PaddleHight = 0;
+    private boolean pause = false;
 
 
 
@@ -59,7 +62,8 @@ public class BoardGame extends View {
             @Override
             public boolean handleMessage(@NonNull Message msg)
             {
-                invalidate();
+                if (!pause)
+                    invalidate();
                 return true;
             }
         }) ;
@@ -130,10 +134,16 @@ public class BoardGame extends View {
 
     private void initializeLevel() {
         blocks = new ArrayList<>();
+        Power = new ArrayList<>();
+        PBalls = new ArrayList<>();
         int blockWidth = 150;
         int blockHeight = 50;
         int spacing = 20; // Horizontal spacing between blocks
         int startX = 50;
+        if (levelNumber != 1){
+            paddle = new Objects((float) getWidth() /2, gameAreaHeight - 50 - PaddleHight, 200, 40);
+            ball = new Cirlce((float) getWidth() /2, gameAreaHeight - 100 - PaddleHight, 30);
+        }
 
         if (levelNumber == 1) {
             blocks.add(new Block(startX, 100, blockWidth, blockHeight, 1));
@@ -233,8 +243,8 @@ public class BoardGame extends View {
 
         // Temporary list to store blocks to remove
         List<Block> toRemove = new ArrayList<>();
-        List<Block> Power = blocks;
-        List<Block> PowerRemove = new ArrayList<>();
+        List<Cirlce> PowerRemove = new ArrayList<>();
+        List<Cirlce> BallRemove = new ArrayList<>();
 
 
 
@@ -246,30 +256,47 @@ public class BoardGame extends View {
             if (Collision(block, ball)&&block.getDurability()<=0) {
                 Audio.playSound("pop", 1.0f);
                 blocks.get(i).setDurability(0);
+                if(block.getPowerUpChance()==15) {
+                    Power.add(block.getPowerUp());
+                }
                 toRemove.add(block); // Mark for removal
             }
 
         }
 
-        // Remove blocks AFTER iteration
+
+        for (int j = 0; j < Power.size(); j++){
+            canvas.drawCircle(Power.get(j).getX(),Power.get(j).getY(),Power.get(j).getR(),powerPaint);
+            Movement(Power.get(j));
+            if (Collision(paddle, Power.get(j) )||( Power.get(j).getY() > gameAreaHeight - Power.get(j).getR())) {
+                PowerRemove.add(Power.get(j));
+                if (Collision(paddle, Power.get(j))){
+                    PBalls.add(new Cirlce(Power.get(j).getX(), Power.get(j).getY()-30, 30));
+                }
+            }
+        }
+
+
+
+        for (int j = 0; j < PBalls.size(); j++){
+            canvas.drawCircle(PBalls.get(j).getX(),PBalls.get(j).getY(),PBalls.get(j).getR(),powerPaint);
+            Movement(PBalls.get(j));
+            for (int i = 0; i < blocks.size(); i++){
+                if(Collision(blocks.get(i),PBalls.get(j)))
+                    toRemove.add(blocks.get(i));
+            }
+
+            if ( PBalls.get(j).getY() > gameAreaHeight - PBalls.get(j).getR()) {
+                BallRemove.add(PBalls.get(j));
+            }
+            Collision(paddle, PBalls.get(j));
+        }
+        if (!BallRemove.isEmpty()) {
+            PBalls.removeAll(BallRemove);
+        }
         if (!toRemove.isEmpty()) {
             blocks.removeAll(toRemove);
         }
-
-        for (int i = 0; i < Power.size(); i++) {
-
-            if (Power.get(i).getDurability()<=0) {
-                //canvas.drawCircle(Power.get(i).getPowerUp().getX(), Power.get(i).getPowerUp().getY(), Power.get(i).getPowerUp().getR(), powerPaint);
-                canvas.drawCircle(300, 300, 30 , powerPaint);
-
-            }
-
-            if (Collision(paddle, Power.get(i).getPowerUp())) {
-
-            }
-        }
-
-        // Remove blocks AFTER iteration
         if (!PowerRemove.isEmpty()) {
             Power.removeAll(PowerRemove);
         }
@@ -303,15 +330,13 @@ public class BoardGame extends View {
             if(!GameWin){
                 Audio.playSound("Win", 1.0f);
             }
-            ball.setDy(0);
-            ball.setDx(0);
+            pause = true;
             canvas.drawText("YOU WIN", (float) getWidth() /2 - 130, (float) gameAreaHeight /2,winPaint);
             GameWin = true;
         }
 
         if (ball.getY() > gameAreaHeight - ball.getR()) {
-            ball.setDy(0);
-            ball.setDx(0);
+            pause = true;
             if(!GameLose)
             {
                 Audio.playSound("gameover", 1.0f);
@@ -328,15 +353,17 @@ public class BoardGame extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!GameWin && !GameLose) {
+
             if (event.getY() < gameAreaHeight) { // Only move paddle inside game area
                 touchX = event.getX();
             }
 
         }
         if (GameLose) {
-
+            pause = false;
         }
             if (GameWin) {
+                pause = false;
                 levelNumber++;
                 GameWin = false;
                 init();
@@ -379,7 +406,6 @@ public class BoardGame extends View {
             block.hitBlock();
             if (block.getDurability() <= 0) {
                 Audio.playSound("pop", 1.0f);
-                blocks.remove(block); // Remove if durability is 0
             }
             if (block.getDurability() > 0){
                 Audio.playSound("bounce", 1.0f);

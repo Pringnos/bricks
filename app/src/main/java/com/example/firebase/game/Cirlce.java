@@ -14,8 +14,9 @@ public class Cirlce {
     public Cirlce(float x, float y) {
         this.x = x;
         this.y = y;
-        this.radius = 30;
+        this.radius = 10;
         dx = 0;
+        dy = 3;
     }
 
 

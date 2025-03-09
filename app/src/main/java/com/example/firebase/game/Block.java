@@ -1,5 +1,5 @@
 package com.example.firebase.game;
-
+import java.util.Random;
 import android.graphics.Color;
 import android.graphics.Paint;
 import java.util.Random;
@@ -15,7 +15,7 @@ public class Block extends Objects {
         super(x, y, width, height);
         paint = new Paint();
         this.durability = durability;
-        this.powerUpChance = 15;
+        this.powerUpChance  = (int)(Math.random() * 15 + 1);
         if (durability==1)
             paint.setColor(Color.YELLOW);
         else if (durability==2)
@@ -24,7 +24,7 @@ public class Block extends Objects {
             paint.setColor(Color.RED);
         else
             paint.setColor(Color.BLACK);
-        powerUp = new Cirlce(300,300);
+        powerUp = new Cirlce(getCenterX(),getCenterY());
     }
 
     public Block setDurability(int durability) {
