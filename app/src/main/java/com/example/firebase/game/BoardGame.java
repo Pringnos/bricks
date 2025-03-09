@@ -26,7 +26,6 @@ public class BoardGame extends View {
     Context context;
     private int levelNumber;
     private List<Block> blocks;
-    private List<Cirlce> Cirlces;
     private float touchX = 300;
     private int screenHeight;
     private int gameAreaHeight; // New height limit for the game area
@@ -131,7 +130,6 @@ public class BoardGame extends View {
 
     private void initializeLevel() {
         blocks = new ArrayList<>();
-        Cirlces = new ArrayList<>();
         int blockWidth = 150;
         int blockHeight = 50;
         int spacing = 20; // Horizontal spacing between blocks
@@ -235,7 +233,8 @@ public class BoardGame extends View {
 
         // Temporary list to store blocks to remove
         List<Block> toRemove = new ArrayList<>();
-
+        List<Block> Power = blocks;
+        List<Block> PowerRemove = new ArrayList<>();
 
 
 
@@ -246,13 +245,33 @@ public class BoardGame extends View {
 
             if (Collision(block, ball)&&block.getDurability()<=0) {
                 Audio.playSound("pop", 1.0f);
+                blocks.get(i).setDurability(0);
                 toRemove.add(block); // Mark for removal
             }
+
         }
 
         // Remove blocks AFTER iteration
         if (!toRemove.isEmpty()) {
             blocks.removeAll(toRemove);
+        }
+
+        for (int i = 0; i < Power.size(); i++) {
+
+            if (Power.get(i).getDurability()<=0) {
+                //canvas.drawCircle(Power.get(i).getPowerUp().getX(), Power.get(i).getPowerUp().getY(), Power.get(i).getPowerUp().getR(), powerPaint);
+                canvas.drawCircle(300, 300, 30 , powerPaint);
+
+            }
+
+            if (Collision(paddle, Power.get(i).getPowerUp())) {
+
+            }
+        }
+
+        // Remove blocks AFTER iteration
+        if (!PowerRemove.isEmpty()) {
+            Power.removeAll(PowerRemove);
         }
 
         // Draw ball and paddle

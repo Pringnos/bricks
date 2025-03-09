@@ -8,6 +8,8 @@ public class Block extends Objects {
     private Paint paint;
     private int durability;
     private int powerUpChance;
+    private Cirlce powerUp;
+
 
     public Block(int x, int y, int width, int height, int durability) {
         super(x, y, width, height);
@@ -22,8 +24,13 @@ public class Block extends Objects {
             paint.setColor(Color.RED);
         else
             paint.setColor(Color.BLACK);
+        powerUp = new Cirlce(300,300);
     }
 
+    public Block setDurability(int durability) {
+        this.durability = durability;
+        return this;
+    }
 
     public int hitBlock() {
         if (durability > 0) {
@@ -52,8 +59,14 @@ public class Block extends Objects {
         return paint;
     }
 
+    public Cirlce getPowerUp() {
+        return powerUp;
+    }
 
-
+    public Block setPowerUp(Cirlce powerUp) {
+        this.powerUp = powerUp;
+        return this;
+    }
 
     public boolean isDestroyed() {
         return durability <= 0;

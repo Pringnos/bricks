@@ -11,6 +11,12 @@ public class Cirlce {
         this.y = y;
         this.radius = radius;
     }
+    public Cirlce(float x, float y) {
+        this.x = x;
+        this.y = y;
+        this.radius = 30;
+        dx = 0;
+    }
 
 
 
