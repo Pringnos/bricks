@@ -46,7 +46,7 @@ public class Game extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (boardGame != null) {
-            boardGame.destroy();  // Clean up game resources
+            //boardGame.destroy();  // Clean up game resources
         }
         Audio.release(); // Release sounds
         Log.d("BoardGame", "Resources released and game thread stopped.");

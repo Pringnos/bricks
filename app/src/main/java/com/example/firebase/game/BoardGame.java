@@ -1,9 +1,13 @@
 package com.example.firebase.game;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioAttributes;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Message;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -14,11 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 import android.os.Handler;
 
+import com.example.firebase.MainActivity;
+import com.example.firebase.R;
+
 public class BoardGame extends View {
 
     Context context;
     private int levelNumber;
     private List<Block> blocks;
+    private List<Cirlce> Cirlces;
     private float touchX = 300;
     private int screenHeight;
     private int gameAreaHeight; // New height limit for the game area
@@ -30,8 +38,11 @@ public class BoardGame extends View {
     int PaddleHight = 0;
 
 
+
+
+
     // Paint objects
-    private Paint ballPaint, paddlePaint, blockPaint1,blockPaint2,blockPaint3, textPaint,winPaint,losePaint;
+    private Paint ballPaint, paddlePaint, textPaint,winPaint,losePaint, powerPaint;
 
     // Game objects
     private Objects paddle;
@@ -39,7 +50,6 @@ public class BoardGame extends View {
 
     public BoardGame(Context context, int levelNumber) {
         super(context);
-
         this.context = context;
         this.levelNumber = levelNumber;
         gameThread = new GameThread();
@@ -95,6 +105,9 @@ public class BoardGame extends View {
         paddlePaint = new Paint();
         paddlePaint.setColor(Color.BLACK);
 
+        powerPaint = new Paint();
+        powerPaint.setColor(Color.rgb(127,0,255));
+
         textPaint = new Paint();
         textPaint.setColor(Color.WHITE);
         textPaint.setTextSize(50);
@@ -115,9 +128,10 @@ public class BoardGame extends View {
         }
     }
 
+
     private void initializeLevel() {
         blocks = new ArrayList<>();
-
+        Cirlces = new ArrayList<>();
         int blockWidth = 150;
         int blockHeight = 50;
         int spacing = 20; // Horizontal spacing between blocks
@@ -149,9 +163,9 @@ public class BoardGame extends View {
             blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1));
             blocks.add(new Block(startX + (blockWidth / 2), 170 + spacing, blockWidth, blockHeight, 2));
             blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170 + spacing, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + (blockWidth), 240 + 2 * spacing, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + 1 * (blockWidth ), 240 + 2 * spacing, blockWidth, blockHeight, 3));
             blocks.add(new Block(startX + 2 * (blockWidth + spacing), 240 + 2 * spacing, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + (blockWidth / 2)+ (blockWidth + spacing), 310 + 3 * spacing, blockWidth, blockHeight, 4));
+            blocks.add(new Block(startX + (blockWidth / 2)+ 1 * (blockWidth + spacing), 310 + 3 * spacing, blockWidth, blockHeight, 4));
 
 
         }if (levelNumber == 4) {
@@ -203,14 +217,12 @@ public class BoardGame extends View {
         screenHeight = h;
         gameAreaHeight = (int) (screenHeight * 0.93);
 
-        // Reset Paddle Height unless changed in the level
-        if (levelNumber != 4 && levelNumber != 5) {
-            PaddleHight = 0; // Ensure default height
-        }
-
-        paddle = new Objects((float) w / 2 - 50, gameAreaHeight - 50 - PaddleHight, 200, 40);
-        ball = new Cirlce((float) w / 2, gameAreaHeight - 100 - PaddleHight, 30);
+        paddle = new Objects(w / 2 - 50, gameAreaHeight - 50 - PaddleHight, 200, 40);
+        ball = new Cirlce(w / 2, gameAreaHeight - 100 - PaddleHight, 30);
     }
+
+
+
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
@@ -223,6 +235,9 @@ public class BoardGame extends View {
 
         // Temporary list to store blocks to remove
         List<Block> toRemove = new ArrayList<>();
+
+
+
 
         // Draw blocks and check collisions
         for (int i = 0; i < blocks.size(); i++) {
@@ -418,6 +433,7 @@ public class BoardGame extends View {
             interrupt(); // Interrupts sleep if it's waiting
         }
     }
+
 
 }
 
