@@ -16,6 +16,8 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.firebase.game.BoardGame;
+import com.example.firebase.game.MyService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -130,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
             }
         } else if (view == playAsGuestButton) {
+
             Intent intent = new Intent(MainActivity.this, Game.class);
             intent.putExtra("LEVEL_NUMBER", 1);
             startActivity(intent);

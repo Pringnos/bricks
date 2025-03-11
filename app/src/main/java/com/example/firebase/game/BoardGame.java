@@ -5,21 +5,17 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.AudioAttributes;
-import android.media.SoundPool;
-import android.os.Build;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-
+import android.view.KeyEvent;
 import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import android.os.Handler;
-
-import com.example.firebase.MainActivity;
-import com.example.firebase.R;
 
 public class BoardGame extends View {
 
@@ -38,6 +34,8 @@ public class BoardGame extends View {
     private boolean GameWin = false;
     int PaddleHight = 0;
     private boolean pause = false;
+    private boolean Apause = false;
+
 
 
 
@@ -62,7 +60,7 @@ public class BoardGame extends View {
             @Override
             public boolean handleMessage(@NonNull Message msg)
             {
-                if (!pause)
+                if (!pause && !Apause)
                     invalidate();
                 return true;
             }
@@ -327,15 +325,19 @@ public class BoardGame extends View {
 
         if (blocks.isEmpty())
         {
+            Intent intent=new Intent(BoardGame.this.getContext(),MyService.class);
+            context.stopService(intent);
+            pause = true;
             if(!GameWin){
                 Audio.playSound("Win", 1.0f);
             }
-            pause = true;
             canvas.drawText("YOU WIN", (float) getWidth() /2 - 130, (float) gameAreaHeight /2,winPaint);
             GameWin = true;
         }
 
         if (ball.getY() > gameAreaHeight - ball.getR()) {
+            Intent intent=new Intent(BoardGame.this.getContext(),MyService.class);
+            context.stopService(intent);
             pause = true;
             if(!GameLose)
             {
@@ -478,8 +480,30 @@ public class BoardGame extends View {
             interrupt(); // Interrupts sleep if it's waiting
         }
     }
-
-
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_1) {  // Detect "1" key
+            Apause = !Apause;  // Toggle Apause{
+            if (!Apause)
+                Apause = true;
+            Log.d("KeyEvent", "Key 1 Pressed - Apause: " + Apause);
+            return true;  // Consume event
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+//    @Override
+//    public void setOnKeyListener(OnKeyListener l) {
+//        super.setOnKeyListener(l);
+//        if (event.getAction() == KeyEvent.ACTION_DOWN) {  // Detect key press
+//            if (keyCode == KeyEvent.KEYCODE_1) { // Check if "1" key is pressed
+//                Apause = !Apause;  // Toggle Apause{
+//            if (!Apause)
+//                Apause = true;
+//            else if (Apause && !pause)
+//                Apause = false;
+//            }
+//        }
+//    }
 }
 
 
