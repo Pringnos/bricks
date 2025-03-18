@@ -29,7 +29,7 @@ public class BoardGame extends View {
     private int gameAreaHeight; // New height limit for the game area
     GameThread gameThread;
     Handler gameHandler;
-    static final long fps=20;
+    static final long fps=10;
     private boolean GameLose = false;
     private boolean GameWin = false;
     int PaddleHight = 0;
@@ -289,11 +289,11 @@ public class BoardGame extends View {
             }
             Collision(paddle, PBalls.get(j));
         }
-        if (!BallRemove.isEmpty()) {
-            PBalls.removeAll(BallRemove);
-        }
         if (!toRemove.isEmpty()) {
             blocks.removeAll(toRemove);
+        }
+        if (!BallRemove.isEmpty()) {
+            PBalls.removeAll(BallRemove);
         }
         if (!PowerRemove.isEmpty()) {
             Power.removeAll(PowerRemove);
@@ -483,9 +483,10 @@ public class BoardGame extends View {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_1) {  // Detect "1" key
-            Apause = !Apause;  // Toggle Apause{
             if (!Apause)
                 Apause = true;
+           else if (Apause && !pause)
+               Apause = false;
             Log.d("KeyEvent", "Key 1 Pressed - Apause: " + Apause);
             return true;  // Consume event
         }
