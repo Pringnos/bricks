@@ -283,8 +283,10 @@ public class BoardGame extends View {
             canvas.drawCircle(PBalls.get(j).getX(),PBalls.get(j).getY(),PBalls.get(j).getR(),powerPaint);
             Movement(PBalls.get(j));
             for (int i = 0; i < blocks.size(); i++){
-                if(Collision(blocks.get(i),PBalls.get(j)))
-                    toRemove.add(blocks.get(i));
+                if(Collision(blocks.get(i),PBalls.get(j))&&blocks.get(i).getDurability()<=0){
+                        Audio.playSound("pop", 1.0f);
+                        toRemove.add(blocks.get(i)); // Mark for removal
+                     }
             }
 
             if ( PBalls.get(j).getY() > gameAreaHeight - PBalls.get(j).getR()) {
@@ -328,16 +330,24 @@ public class BoardGame extends View {
 
         if (blocks.isEmpty())
         {
+
             Intent intent=new Intent(BoardGame.this.getContext(),MyService.class);
             intent.setAction("PAUSE");
             context.startService(intent);
 
             pause = true;
+            if(!(levelNumber == 10))
+            {
             if(!GameWin){
                 Audio.playSound("Win", 1.0f);
             }
-            canvas.drawText("YOU WIN", (float) getWidth() /2 - 130, (float) gameAreaHeight /2,winPaint);
+            canvas.drawText("LEVEL WON", (float) getWidth() /2 - 130, (float) gameAreaHeight /2,winPaint);
             GameWin = true;
+            }
+            if(levelNumber == 10)
+            {
+                canvas.drawText("YOU WIN", (float) getWidth() /2 - 130, (float) gameAreaHeight /2,winPaint);
+            }
         }
 
         if (ball.getY() > gameAreaHeight - ball.getR()) {

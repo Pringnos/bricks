@@ -15,7 +15,8 @@ public class Block extends Objects {
         super(x, y, width, height);
         paint = new Paint();
         this.durability = durability;
-        this.powerUpChance  = (int)(Math.random() * 15 + 1);
+        //this.powerUpChance  = (int)(Math.random() * 15 + 1);
+        this.powerUpChance  = 15;
         if (durability==1)
             paint.setColor(Color.YELLOW);
         else if (durability==2)
