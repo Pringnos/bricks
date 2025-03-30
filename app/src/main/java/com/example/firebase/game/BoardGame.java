@@ -141,6 +141,9 @@ public class BoardGame extends View {
         if (levelNumber != 1){
             paddle = new Objects((float) getWidth() /2, gameAreaHeight - 50 - PaddleHight, 200, 40);
             ball = new Cirlce((float) getWidth() /2, gameAreaHeight - 100 - PaddleHight, 30);
+            Intent intent=new Intent(BoardGame.this.getContext(),MyService.class);
+            context.startService(intent);
+
         }
 
         if (levelNumber == 1) {
@@ -326,7 +329,9 @@ public class BoardGame extends View {
         if (blocks.isEmpty())
         {
             Intent intent=new Intent(BoardGame.this.getContext(),MyService.class);
-            context.stopService(intent);
+            intent.setAction("PAUSE");
+            context.startService(intent);
+
             pause = true;
             if(!GameWin){
                 Audio.playSound("Win", 1.0f);
