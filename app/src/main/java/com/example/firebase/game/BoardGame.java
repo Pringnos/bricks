@@ -155,6 +155,7 @@ public class BoardGame extends View {
         int startX = (int) (screenWidth / 14.4);          // ~50
         int Y1 = (int) (screenHeight / 11);
         int Ydiff = (int) (screenHeight / 15);
+        int Xmid = (int) (screenWidth/2-blockWidth/2);
 
         if (levelNumber != 1) {
             paddle = new Objects((float) getWidth() / 2, gameAreaHeight - 50 - PaddleHight, 200, 40);
@@ -236,28 +237,45 @@ public class BoardGame extends View {
             blocks.add(new Block(startX + blockWidth + spacing, Y1 + 3 * Ydiff, blockWidth, blockHeight, 2));
             blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1 + 3 * Ydiff, blockWidth, blockHeight, 3));
         }
-        if (levelNumber == 6) {
-            for (int row = 0; row < 5; row++) {
-                int rowY = Y1 + row * Ydiff;
-                for (int col = 0; col < 4; col++) {
-                    if ((row + col) % 2 == 0) continue; // create "holes"
-                    int x = startX + col * (blockWidth + spacing);
-                    blocks.add(new Block(x, rowY, blockWidth, blockHeight, (col % 3) + 1));
-                }
-            }
-        }
-        if (levelNumber == 1) {
-            for (int row = 0; row < 4; row++) {
-                int blocksInRow = 4 - row;
-                int rowY = Y1 + row * Ydiff;
-                int offsetX = startX + (blockWidth + spacing) * row / 2;
 
-                for (int col = 0; col < blocksInRow; col++) {
-                    int x = offsetX + col * (blockWidth + spacing);
-                    blocks.add(new Block(x, rowY, blockWidth, blockHeight, row + 1));
+
+
+            if (levelNumber == 6) {
+                for (int row = 0; row < 5; row++) {
+                    int y = Y1 + row * Ydiff;
+                    for (int col = 0; col < 4; col++) {
+                        if ((row + col) % 2 == 0) continue;
+                        int x = startX + col * (blockWidth + spacing);
+                        blocks.add(new Block(x, y, blockWidth, blockHeight, (col % 3) + 1));
+                    }
                 }
             }
+        if (levelNumber == 8) {
+
+            blocks.add(new Block(Xmid, Y1, blockWidth, blockHeight, 1));
+
+            blocks.add(new Block(Xmid - (blockWidth + spacing),Y1 + Ydiff, blockWidth, blockHeight, 2));
+            blocks.add(new Block(Xmid + (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 2));
+
+            blocks.add(new Block(Xmid - 2 * (blockWidth + spacing), Y1 + 2 * Ydiff, blockWidth, blockHeight, 3));
+            blocks.add(new Block(Xmid, Y1 + 2 * Ydiff, blockWidth, blockHeight, 4));
+            blocks.add(new Block(Xmid + 2 * (blockWidth + spacing), Y1 + 2 * Ydiff, blockWidth, blockHeight, 3));
+
+            blocks.add(new Block(Xmid - (blockWidth + spacing), Y1 + 3 * Ydiff, blockWidth, blockHeight, 2));
+            blocks.add(new Block(Xmid + (blockWidth + spacing), Y1 + 3 * Ydiff, blockWidth, blockHeight, 2));
+
+            blocks.add(new Block(Xmid, Y1 + 4 * Ydiff, blockWidth, blockHeight, 1));
         }
+
+
+        if (levelNumber == 1) {
+            for (int i = 0; i < 5; i++) {
+                int x = startX + i * (blockWidth + spacing);
+                int y = Y1 + i * Ydiff;
+                blocks.add(new Block(x, y, blockWidth, blockHeight, (i % 3) + 2));
+            }
+        }
+
 
 
     }
