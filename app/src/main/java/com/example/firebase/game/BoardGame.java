@@ -148,10 +148,13 @@ public class BoardGame extends View {
         blocks = new ArrayList<>();
         Power = new ArrayList<>();
         PBalls = new ArrayList<>();
-        int blockWidth = (int) (screenWidth/5);
-        int blockHeight = (int) (screenWidth/15);
-        int spacing = (int) (screenWidth/36); // Horizontal spacing between blocks
-        int startX = (int) (screenWidth*14.4);
+        int blockWidth = (int) (screenWidth/4.8); //150
+        int blockHeight = (int) (screenWidth/14.4); //50
+        int spacing = (int) (screenWidth/36); //20
+        int startX = (int) (screenWidth/14.4); //50
+        int Y1 = (int) (screenHeight/11);
+        int Ydiff = (int) (screenHeight/15);
+
 
         if (levelNumber != 1){
             paddle = new Objects((float) getWidth() /2, gameAreaHeight - 50 - PaddleHight, 200, 40);
