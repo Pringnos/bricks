@@ -148,94 +148,95 @@ public class BoardGame extends View {
         blocks = new ArrayList<>();
         Power = new ArrayList<>();
         PBalls = new ArrayList<>();
-        int blockWidth = (int) (screenWidth/4.8); //150
-        int blockHeight = (int) (screenWidth/14.4); //50
-        int spacing = (int) (screenWidth/36); //20
-        int startX = (int) (screenWidth/14.4); //50
-        int Y1 = (int) (screenHeight/11);
-        int Ydiff = (int) (screenHeight/15);
 
+        int blockWidth = (int) (screenWidth / 4.8);       // ~150
+        int blockHeight = (int) (screenWidth / 14.4);     // ~50
+        int spacing = (int) (screenWidth / 36);           // ~20
+        int startX = (int) (screenWidth / 14.4);          // ~50
+        int Y1 = (int) (screenHeight / 11);
+        int Ydiff = (int) (screenHeight / 15);
 
-        if (levelNumber != 1){
-            paddle = new Objects((float) getWidth() /2, gameAreaHeight - 50 - PaddleHight, 200, 40);
-            ball = new Cirlce((float) getWidth() /2, gameAreaHeight - 100 - PaddleHight, 30);
-            Intent intent=new Intent(BoardGame.this.getContext(),MyService.class);
+        if (levelNumber != 1) {
+            paddle = new Objects((float) getWidth() / 2, gameAreaHeight - 50 - PaddleHight, 200, 40);
+            ball = new Cirlce((float) getWidth() / 2, gameAreaHeight - 100 - PaddleHight, 30);
+            Intent intent = new Intent(BoardGame.this.getContext(), MyService.class);
             context.startService(intent);
+        }
 
+        if (levelNumber == 5) {
+            blocks.add(new Block(startX, Y1, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + blockWidth, Y1 + 2 * Ydiff, blockWidth, blockHeight, 1));
+        }
+
+        if (levelNumber == 2) {
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + (blockWidth / 2), Y1 + Ydiff, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, Y1 + Ydiff, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + blockWidth, Y1 + 2 * Ydiff, blockWidth, blockHeight, 3));
+        }
+
+        if (levelNumber == 3) {
+            ball.setDy(-6);
+            ball.setDx(6);
+            blocks.add(new Block(startX, Y1, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth / 2), Y1 + Ydiff + spacing, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), Y1 + Ydiff + spacing, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + blockWidth, Y1 + 2 * Ydiff + 2 * spacing, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1 + 2 * Ydiff + 2 * spacing, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, Y1 + 3 * Ydiff + 3 * spacing, blockWidth, blockHeight, 4));
         }
 
         if (levelNumber == 1) {
-            blocks.add(new Block(startX, 100, blockWidth, blockHeight, 1));
-
-            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2));
-
-            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 1));
-        }
-        if (levelNumber == 2) {
-
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 3));
-
-            blocks.add(new Block(startX + (blockWidth / 2), 170, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 170, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2));
-
-            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 3));
-        }if (levelNumber == 3) {
-            ball.setDy(-6);
-            ball.setDx(6);
-            blocks.add(new Block(startX, 100, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + (blockWidth / 2), 170 + spacing, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170 + spacing, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 1 * (blockWidth ), 240 + 2 * spacing, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 240 + 2 * spacing, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + (blockWidth / 2)+ 1 * (blockWidth + spacing), 310 + 3 * spacing, blockWidth, blockHeight, 4));
-
-
-        }if (levelNumber == 4) {
             ball.setDy(6);
             ball.setDx(6);
             PaddleHight = 20;
-            blocks.add(new Block(startX + blockWidth - 2 * spacing , 100, 100, blockHeight, 1));
-            blocks.add(new Block(startX + blockWidth - 2 * spacing + 2 * (100 + spacing) + 50 , 100, 100, blockHeight, 1));
-            blocks.add(new Block(startX + (blockWidth + spacing) + 10, 170, 100, blockHeight, 2));
-            blocks.add(new Block(startX + 40, 170, 100, blockHeight, 2));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing) - 10, 170, 100, blockHeight, 3));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 130, 170, 100, blockHeight, 2));
-            blocks.add(new Block(startX + (blockWidth / 2) + (blockWidth + spacing), 240, 120, blockHeight, 2));
-            blocks.add(new Block(startX - spacing, 240, 120, blockHeight, 2));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 190, 240, 120, blockHeight, 2));
-            blocks.add(new Block(startX + 40, 310, 100, blockHeight, 2));
-            blocks.add(new Block(startX + (blockWidth + spacing) + 10, 310, 100, blockHeight, 2));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing) - 10, 310, 100, blockHeight, 3));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 130, 310, 100, blockHeight, 2));
-            blocks.add(new Block(startX + blockWidth - 2 * spacing , 380, 100, blockHeight, 1));
-            blocks.add(new Block(startX + blockWidth - 2 * spacing + 2 * (100 + spacing) + 50 , 380, 100, blockHeight, 1));
-        }if (levelNumber == 5) {
+
+            int smallWidth = (int) (blockWidth * 0.7);
+            int medWidth = (int) (blockWidth * 0.85);
+
+            blocks.add(new Block(startX + blockWidth - 2 * spacing, Y1, smallWidth, blockHeight, 1));
+            blocks.add(new Block(startX + blockWidth - 2 * spacing + 2 * (smallWidth + spacing) + spacing, Y1, smallWidth, blockHeight, 1));
+            blocks.add(new Block(startX + blockWidth + spacing + spacing / 2, Y1 + Ydiff, smallWidth, blockHeight, 2));
+            blocks.add(new Block(startX + spacing * 2, Y1 + Ydiff, smallWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing) - spacing / 2, Y1 + Ydiff, smallWidth, blockHeight, 3));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 130, Y1 + Ydiff, smallWidth, blockHeight, 2));
+            blocks.add(new Block(startX + (blockWidth / 2) + (blockWidth + spacing), Y1 + 2 * Ydiff, medWidth, blockHeight, 2));
+            blocks.add(new Block(startX - spacing, Y1 + 2 * Ydiff, medWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 190, Y1 + 2 * Ydiff, medWidth, blockHeight, 2));
+            blocks.add(new Block(startX + spacing * 2, Y1 + 3 * Ydiff, smallWidth, blockHeight, 2));
+            blocks.add(new Block(startX + blockWidth + spacing + spacing / 2, Y1 + 3 * Ydiff, smallWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing) - spacing / 2, Y1 + 3 * Ydiff, smallWidth, blockHeight, 3));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 130, Y1 + 3 * Ydiff, smallWidth, blockHeight, 2));
+            blocks.add(new Block(startX + blockWidth - 2 * spacing, Y1 + 4 * Ydiff, smallWidth, blockHeight, 1));
+            blocks.add(new Block(startX + blockWidth - 2 * spacing + 2 * (smallWidth + spacing) + spacing, Y1 + 4 * Ydiff, smallWidth, blockHeight, 1));
+        }
+
+        if (levelNumber == 5) {
             ball.setDy(6);
             ball.setDx(6);
             PaddleHight = 50;
 
-            blocks.add(new Block(startX + (blockWidth + spacing), 100, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 100, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 100, blockWidth, blockHeight, 4));
+            blocks.add(new Block(startX + blockWidth + spacing, Y1, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 4));
 
-            blocks.add(new Block(startX, 170, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 170, blockWidth, blockHeight, 4));
+            blocks.add(new Block(startX, Y1 + Ydiff, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 3));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 4));
 
-            blocks.add(new Block(startX, 240, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + (blockWidth + spacing), 240, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), 240, blockWidth, blockHeight, 4));
+            blocks.add(new Block(startX, Y1 + 2 * Ydiff, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + blockWidth + spacing, Y1 + 2 * Ydiff, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1 + 2 * Ydiff, blockWidth, blockHeight, 4));
 
-            blocks.add(new Block(startX, 310, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + (blockWidth + spacing), 310, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), 310, blockWidth, blockHeight, 3));
-
+            blocks.add(new Block(startX, Y1 + 3 * Ydiff, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + blockWidth + spacing, Y1 + 3 * Ydiff, blockWidth, blockHeight, 2));
+            blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1 + 3 * Ydiff, blockWidth, blockHeight, 3));
         }
     }
-
 
 
 
@@ -513,7 +514,18 @@ public class BoardGame extends View {
             Log.d("KeyEvent", "Key 1 Pressed - Apause: " + Apause);
             return true;  // Consume event
         }
+        if(keyCode == KeyEvent.KEYCODE_DPAD_RIGHT){
+            paddle.moveHorizontally(5);
+            touchX+=5;
+        }
+        if(keyCode == KeyEvent.KEYCODE_DPAD_LEFT){
+            paddle.moveHorizontally(-5);
+            touchX-=5;
+        }
+
+
         return super.onKeyDown(keyCode, event);
+
     }
 //    @Override
 //    public void setOnKeyListener(OnKeyListener l) {
