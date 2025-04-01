@@ -163,7 +163,7 @@ public class BoardGame extends View {
             context.startService(intent);
         }
 
-        if (levelNumber == 5) {
+        if (levelNumber == 6) {
             blocks.add(new Block(startX, Y1, blockWidth, blockHeight, 1));
             blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 2));
             blocks.add(new Block(startX + blockWidth, Y1 + 2 * Ydiff, blockWidth, blockHeight, 1));
@@ -190,7 +190,7 @@ public class BoardGame extends View {
             blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, Y1 + 3 * Ydiff + 3 * spacing, blockWidth, blockHeight, 4));
         }
 
-        if (levelNumber == 1) {
+        if (levelNumber == 4) {
             ball.setDy(6);
             ball.setDx(6);
             PaddleHight = 20;
@@ -236,6 +236,30 @@ public class BoardGame extends View {
             blocks.add(new Block(startX + blockWidth + spacing, Y1 + 3 * Ydiff, blockWidth, blockHeight, 2));
             blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1 + 3 * Ydiff, blockWidth, blockHeight, 3));
         }
+        if (levelNumber == 6) {
+            for (int row = 0; row < 5; row++) {
+                int rowY = Y1 + row * Ydiff;
+                for (int col = 0; col < 4; col++) {
+                    if ((row + col) % 2 == 0) continue; // create "holes"
+                    int x = startX + col * (blockWidth + spacing);
+                    blocks.add(new Block(x, rowY, blockWidth, blockHeight, (col % 3) + 1));
+                }
+            }
+        }
+        if (levelNumber == 1) {
+            for (int row = 0; row < 4; row++) {
+                int blocksInRow = 4 - row;
+                int rowY = Y1 + row * Ydiff;
+                int offsetX = startX + (blockWidth + spacing) * row / 2;
+
+                for (int col = 0; col < blocksInRow; col++) {
+                    int x = offsetX + col * (blockWidth + spacing);
+                    blocks.add(new Block(x, rowY, blockWidth, blockHeight, row + 1));
+                }
+            }
+        }
+
+
     }
 
 
