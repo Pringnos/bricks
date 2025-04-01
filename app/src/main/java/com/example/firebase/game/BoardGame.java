@@ -36,6 +36,7 @@ public class BoardGame extends View {
     int PaddleHight = 0;
     private boolean pause = false;
     private boolean Apause = false;
+    private boolean sizeInitialized = false;
 
 
 
@@ -49,13 +50,26 @@ public class BoardGame extends View {
     private Objects paddle;
     private Cirlce ball;
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        screenHeight = h;
+        screenWidth = w;
+        if (!sizeInitialized) {
+            gameAreaHeight = (int) (screenHeight * 0.93);
+            paddle = new Objects(w / 2 - 50, gameAreaHeight - 50 - PaddleHight, 200, 40);
+            ball = new Cirlce(w / 2, gameAreaHeight - 100 - PaddleHight, 30);
+            sizeInitialized = true;
+            init();
+        }
+    }
+
     public BoardGame(Context context, int levelNumber) {
         super(context);
         this.context = context;
         this.levelNumber = levelNumber;
         gameThread = new GameThread();
         gameThread.start();
-        init(); // Initialize objects
 
         gameHandler= new Handler(new Handler.Callback() {
             @Override
@@ -66,18 +80,8 @@ public class BoardGame extends View {
                 return true;
             }
         }) ;
-
-
     }
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        screenHeight = h;
-        gameAreaHeight = (int) (screenHeight * 0.93);
-        screenWidth = oldw;
-        paddle = new Objects(w / 2 - 50, gameAreaHeight - 50 - PaddleHight, 200, 40);
-        ball = new Cirlce(w / 2, gameAreaHeight - 100 - PaddleHight, 30);
-    }
+
     public void destroy() {
         if (gameThread != null) {
             gameThread.stopThread();
@@ -144,10 +148,10 @@ public class BoardGame extends View {
         blocks = new ArrayList<>();
         Power = new ArrayList<>();
         PBalls = new ArrayList<>();
-        int blockWidth = 150;
-        int blockHeight = 50;
-        int spacing = 20; // Horizontal spacing between blocks
-        int startX = 50;
+        int blockWidth = (int) (screenWidth/5);
+        int blockHeight = (int) (screenWidth/15);
+        int spacing = (int) (screenWidth/36); // Horizontal spacing between blocks
+        int startX = (int) (screenWidth*14.4);
 
         if (levelNumber != 1){
             paddle = new Objects((float) getWidth() /2, gameAreaHeight - 50 - PaddleHight, 200, 40);
@@ -160,11 +164,9 @@ public class BoardGame extends View {
         if (levelNumber == 1) {
             blocks.add(new Block(startX, 100, blockWidth, blockHeight, 1));
 
-                        blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, 100, screenWidth, blockHeight, 1));
-            //
-            //            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2));
-            //
-            //            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 1));
+            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), 170, blockWidth, blockHeight, 2));
+
+            blocks.add(new Block(startX + 2 * (blockWidth / 2), 240, blockWidth, blockHeight, 1));
         }
         if (levelNumber == 2) {
 
