@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!-- Rank (emoji or number) -->
+    <TextView
+        android:id="@+id/text_rank"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textColor="#FFF"
+        android:gravity="center" />
+
+    <!-- Name -->
+    <TextView
+        android:id="@+id/text_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="18sp"
+        android:textColor="#FFF"
+        android:maxLines="1" />
+
+    <!-- Score -->
+    <TextView
+        android:id="@+id/text_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="#FFD700"
+        android:textStyle="bold" />
+</LinearLayout>

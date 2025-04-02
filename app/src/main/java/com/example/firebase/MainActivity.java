@@ -16,6 +16,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.firebase.game.HighScore;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ActivityResultLauncher<Intent> registerActivityLauncher;
     private ActivityResultLauncher<Intent> loginActivityLauncher;
     private ActivityResultLauncher<Intent> playActivityLauncher;
-    private Button registerButton, loginButton, playButton, playAsGuestButton, logoutButton;
+    private Button registerButton, loginButton, playButton, playAsGuestButton, logoutButton, highScoresButton;
     private TextView scoreTextView, welcomeTextView;
     private FirebaseAuth firebaseAuth;
 
@@ -47,7 +48,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         );
         playActivityLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> { /* todo: update game high score */ }
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        int score = result.getData().getIntExtra("score", 0);
+                        scoreTextView.setText("Score: " + score);
+                        scoreTextView.setVisibility(View.VISIBLE);
+                    }
+                }
         );
         registerActivityLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -66,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         registerButton = findViewById(R.id.RB);
         loginButton = findViewById(R.id.LB);
         logoutButton = findViewById(R.id.logoutButton);
+        highScoresButton = findViewById(R.id.highScoresButton);
 
         scoreTextView.setText("Score: " + score);
 
@@ -82,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         playButton.setOnClickListener(this);
         playAsGuestButton.setOnClickListener(this);
         logoutButton.setOnClickListener(this);
+        highScoresButton.setOnClickListener(this);
 
         // Display user name & update button visibility
         displayUserNameAndUpdateButtons();
@@ -127,16 +136,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 Intent intent = new Intent(MainActivity.this, Game.class);
                 intent.putExtra("LEVEL_NUMBER", 1);
-                startActivity(intent);
+                playActivityLauncher.launch(intent);
             }
         } else if (view == playAsGuestButton) {
             Intent intent = new Intent(MainActivity.this, Game.class);
             intent.putExtra("LEVEL_NUMBER", 1);
-            startActivity(intent);
+            playActivityLauncher.launch(intent);
         } else if (view == logoutButton) {
             firebaseAuth.signOut();
             Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
             displayUserNameAndUpdateButtons(); // Refresh UI after logout
+        } else if (view == highScoresButton) {
+            highScoresButton.setOnClickListener(v -> {
+                Intent intent = new Intent(MainActivity.this, HighScore.class);
+                startActivity(intent);
+            });
         }
     }
 }

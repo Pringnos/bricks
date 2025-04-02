@@ -1,6 +1,7 @@
 package com.example.firebase.game;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,6 +14,10 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import android.os.Handler;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.example.firebase.HighScoreManager;
 
 public class BoardGame extends View {
 
@@ -28,8 +33,9 @@ public class BoardGame extends View {
     private boolean GameLose = false;
     private boolean GameWin = false;
     int PaddleHight = 0;
-
-
+    private boolean waitForTapToEnd = false;
+    private boolean isGameOverHandled = false;
+    private int score = 0;
     // Paint objects
     private Paint ballPaint, paddlePaint, blockPaint1,blockPaint2,blockPaint3, textPaint,winPaint,losePaint;
 
@@ -260,56 +266,75 @@ public class BoardGame extends View {
 
         // Draw UI text
         textPaint.setColor(Color.BLACK);
-        canvas.drawText("Level: " + levelNumber, 50, gameAreaHeight + 100, textPaint);
+        canvas.drawText("Level: " + levelNumber + "   Score: " + score, 50, gameAreaHeight + 100, textPaint);
 
         canvas.restore();
 
-        if (blocks.isEmpty())
-        {
-            if(!GameWin){
-                Audio.playSound("Win", 1.0f);
-            }
-            ball.setDy(0);
-            ball.setDx(0);
-            canvas.drawText("YOU WIN", (float) getWidth() /2 - 130, (float) gameAreaHeight /2,winPaint);
-            GameWin = true;
-        }
-
-        if (ball.getY() > gameAreaHeight - ball.getR()) {
-            ball.setDy(0);
-            ball.setDx(0);
-            if(!GameLose)
-            {
-                Audio.playSound("gameover", 1.0f);
-            }
-
-            canvas.drawText("YOU LOSE", (float) getWidth() /2 -130, (float) gameAreaHeight /2,losePaint);
-            GameLose = true;
-
-
-        }
+        handleGameEnd(canvas);
         //invalidate();
+    }
+
+    private void handleGameEnd(Canvas canvas) {
+        if (GameWin && !isGameOverHandled) {
+            ball.setDx(0);
+            ball.setDy(0);
+            isGameOverHandled = true;
+
+            if (levelNumber >= 5) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    HighScoreManager.reportScore(score);
+                }
+                waitForTapToEnd = true;
+                Audio.playSound("Win", 1.0f);
+                canvas.drawText("YOU WIN", getWidth() / 2f - 180, gameAreaHeight / 2f, winPaint);
+            } else {
+                levelNumber++;
+                GameWin = false;
+                isGameOverHandled = false;
+                init(); // Auto-advance to next level
+            }
+        }
+
+        if (GameLose && !isGameOverHandled) {
+            ball.setDx(0);
+            ball.setDy(0);
+            isGameOverHandled = true;
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
+                HighScoreManager.reportScore(score);
+            }
+
+            waitForTapToEnd = true;
+            Audio.playSound("gameover", 1.0f);
+            canvas.drawText("Nice Try", getWidth() / 2f - 180, gameAreaHeight / 2f, losePaint);
+        }
+
+        if (waitForTapToEnd) {
+            // Draw “tap to continue” text if user must tap
+            String msg = GameWin ? "YOU WIN!" : "Nice Try";
+            canvas.drawText(msg, getWidth() / 2f - 180, gameAreaHeight / 2f, GameWin ? winPaint : losePaint);
+        }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!GameWin && !GameLose) {
-            if (event.getY() < gameAreaHeight) { // Only move paddle inside game area
-                touchX = event.getX();
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (!GameWin && !GameLose) {
+                if (event.getY() < gameAreaHeight) {
+                    touchX = event.getX();
+                }
+            } else if (waitForTapToEnd) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("score", score);
+                if (context instanceof android.app.Activity) {
+                    ((android.app.Activity) context).setResult(android.app.Activity.RESULT_OK, resultIntent);
+                    ((android.app.Activity) context).finish();
+                }
             }
-
         }
-        if (GameLose) {
-
-        }
-            if (GameWin) {
-                levelNumber++;
-                GameWin = false;
-                init();
-                invalidate();
-            }
-
-        return super.onTouchEvent(event);
+        return true;
     }
     public boolean Collision(Objects a, Cirlce p) {
         float ballLeft = p.getX() - p.getR();
@@ -343,6 +368,7 @@ public class BoardGame extends View {
         if (collisionDetected && a instanceof Block) {
             Block block = (Block) a;
             block.hitBlock();
+            score += 10;
             if (block.getDurability() <= 0) {
                 Audio.playSound("pop", 1.0f);
                 blocks.remove(block); // Remove if durability is 0
@@ -385,9 +411,12 @@ public class BoardGame extends View {
 
         // Ball hits the bottom (Game Over condition)
         if (p.getY() > gameAreaHeight - p.getR()) {
-            p.setCMy(); // Reverse Y direction
+            GameLose = true;
+            //p.setY(gameAreaHeight - p.getR()); // Prevent it from sinking below
         }
-
+    }
+    public int getScore() {
+        return score;
     }
     public class GameThread extends Thread {
         private boolean isRunning = true;  // Controls loop execution
@@ -418,7 +447,4 @@ public class BoardGame extends View {
             interrupt(); // Interrupts sleep if it's waiting
         }
     }
-
 }
-
-

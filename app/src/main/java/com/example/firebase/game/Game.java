@@ -1,5 +1,6 @@
 package com.example.firebase.game;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.FrameLayout;
@@ -40,16 +41,19 @@ public class Game extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
     }
+
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if (boardGame != null) {
-            boardGame.destroy();  // Clean up game resources
+            int finalScore = boardGame.getScore();
+
+            // Return score to MainActivity
+            setResult(RESULT_OK, new Intent().putExtra("score", finalScore));
+            boardGame.destroy();
         }
-        Audio.release(); // Release sounds
-        Log.d("BoardGame", "Resources released and game thread stopped.");
+        Audio.release();
+        super.onDestroy();
     }
 
 }
