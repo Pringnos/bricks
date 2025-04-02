@@ -7,7 +7,6 @@ public class UserScore {
     public UserScore() {
         // Default constructor required for calls to DataSnapshot.getValue(UserScore.class)
     }
-
     public UserScore(String name, int score) {
         this.name = name;
         this.score = score;
