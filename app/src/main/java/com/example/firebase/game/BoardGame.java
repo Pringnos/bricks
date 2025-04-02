@@ -164,7 +164,7 @@ public class BoardGame extends View {
             context.startService(intent);
         }
 
-        if (levelNumber == 6) {
+        if (levelNumber == 1) {
             blocks.add(new Block(startX, Y1, blockWidth, blockHeight, 1));
             blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 2));
             blocks.add(new Block(startX + blockWidth, Y1 + 2 * Ydiff, blockWidth, blockHeight, 1));
@@ -268,7 +268,7 @@ public class BoardGame extends View {
         }
 
 
-        if (levelNumber == 1) {
+        if (levelNumber == 10) {
             for (int i = 0; i < 5; i++) {
                 int x = startX + i * (blockWidth + spacing);
                 int y = Y1 + i * Ydiff;
