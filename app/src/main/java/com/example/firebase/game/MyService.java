@@ -28,6 +28,7 @@ public class MyService extends Service {
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
                 audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
 
+
         if (mediaPlayer == null) {
             mediaPlayer = MediaPlayer.create(this, R.raw.backround);
             mediaPlayer.setLooping(true);
