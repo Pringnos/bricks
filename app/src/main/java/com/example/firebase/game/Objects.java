@@ -46,7 +46,6 @@ public class Objects {
         return y;
     }
 
-    /** Move object horizontally */
     public Objects moveHorizontally(float delta) {
         this.x += delta;
         return this;
