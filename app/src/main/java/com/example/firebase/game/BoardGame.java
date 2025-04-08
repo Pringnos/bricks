@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 import android.os.Handler;
-
+//new
 public class BoardGame extends View {
 
     Context context;
