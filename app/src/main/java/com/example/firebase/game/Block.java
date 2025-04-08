@@ -10,7 +10,7 @@ public class Block extends Objects {
     private int powerUpChance;
     private Cirlce powerUp;
 
-
+    //new a
     public Block(int x, int y, int width, int height, int durability) {
         super(x, y, width, height);
         paint = new Paint();

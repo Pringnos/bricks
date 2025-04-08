@@ -5,7 +5,7 @@ public class Cirlce {
     private float dx = 5;  // Default horizontal speed
     private float dy = -5; // Default upward movement
 
-
+    //new a
     public Cirlce(float x, float y, float radius) {
         this.x = x;
         this.y = y;

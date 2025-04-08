@@ -13,7 +13,7 @@ public class MyService extends Service {
     private MediaPlayer mediaPlayer;
     private boolean isPaused = false;
     private int resumePosition = 0;
-
+    //new a
     @Override
     public IBinder onBind(Intent intent) {
         return null;  // We don't need to bind

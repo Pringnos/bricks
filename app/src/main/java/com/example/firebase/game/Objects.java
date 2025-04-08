@@ -5,7 +5,7 @@ public class Objects {
     private float y;
     protected float w; // Width
     protected float h; // Height
-
+    //new a
     public Objects(float x, float y, float width, float height) {
         this.x = x;
         this.y = y;

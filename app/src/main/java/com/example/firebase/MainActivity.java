@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             logoutButton.setVisibility(View.GONE);
         }
     }
-
+    //new a
     @Override
     public void onClick(View view) {
         if (view == registerButton) {
