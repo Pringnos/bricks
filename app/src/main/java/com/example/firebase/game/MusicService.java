@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.example.firebase.R;
 
-public class MyService extends Service {
+public class MusicService extends Service {
     private MediaPlayer mediaPlayer;
     private boolean isPaused = false;
     private int resumePosition = 0;

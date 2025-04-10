@@ -2,7 +2,6 @@ package com.example.firebase.game;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import androidx.activity.EdgeToEdge;
@@ -11,8 +10,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.firebase.MainActivity;
-import com.example.firebase.game.BoardGame;
 import com.example.firebase.R;
 
 public class Game extends AppCompatActivity {
@@ -34,7 +31,7 @@ public class Game extends AppCompatActivity {
         levelNumber = getIntent().getIntExtra("LEVEL_NUMBER", 1);
 
         boardGame = new BoardGame(this, levelNumber);
-        Intent intent1=new Intent(Game.this, MyService.class);
+        Intent intent1=new Intent(Game.this, MusicService.class);
         boardGame.setFocusable(true);
         boardGame.setFocusableInTouchMode(true);
         boardGame.requestFocus();

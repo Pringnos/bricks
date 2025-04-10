@@ -15,6 +15,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.example.firebase.HighScoreManager;
+import com.example.firebase.levels.LevelLoader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -80,15 +81,7 @@ public class BoardGame extends View {
     }
 
     public void destroy() {
-        if (gameThread != null) {
-            gameThread.stopThread();
-            try {
-                gameThread.join(); // Ensures the thread fully stops before continuing
-            } catch (InterruptedException e) {
-                Log.e("BoardGame", "Game thread interrupted during shutdown", e);
-            }
-            gameThread = null;  // Only set to null after stopping fully
-        }
+        stopGameThreadSafely();
         Audio.release(); // Release sounds
         Log.d("BoardGame", "Resources released and game thread stopped.");
     }
@@ -100,14 +93,7 @@ public class BoardGame extends View {
     }
 
     private void init() {
-        if (gameThread != null && gameThread.isRunning) {
-            gameThread.stopThread();
-            try {
-                gameThread.join();
-            } catch (InterruptedException e) {
-                Log.e("BoardGame", "Thread error", e);
-            }
-        }
+        stopGameThreadSafely();
 
         ballPaint = new Paint(); ballPaint.setColor(Color.BLUE);
         paddlePaint = new Paint(); paddlePaint.setColor(Color.BLACK);
@@ -123,204 +109,106 @@ public class BoardGame extends View {
     }
 
     private void initializeLevel() {
-        blocks = new ArrayList<>();
-        Power = new ArrayList<>();
-        PBalls = new ArrayList<>();
-
-        int blockWidth = (int) (screenWidth / 4.8);       // ~150
-        int blockHeight = (int) (screenWidth / 14.4);     // ~50
-        int spacing = (int) (screenWidth / 36);           // ~20
-        int startX = (int) (screenWidth / 14.4);          // ~50
-        int Y1 = (int) (screenHeight / 11);
-        int Ydiff = (int) (screenHeight / 15);
-
-        if (levelNumber != 1) {
-            paddle = new Objects((float) getWidth() / 2, gameAreaHeight - 50 - PaddleHight, 200, 40);
-            ball = new Cirlce((float) getWidth() / 2, gameAreaHeight - 100 - PaddleHight, 30);
-            Intent intent = new Intent(BoardGame.this.getContext(), MyService.class);
-            context.startService(intent);
-        }
-
-        if (levelNumber == 6) {
-            blocks.add(new Block(startX, Y1, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + blockWidth, Y1 + 2 * Ydiff, blockWidth, blockHeight, 1));
-        }
-
-        if (levelNumber == 2) {
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + (blockWidth / 2), Y1 + Ydiff, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, Y1 + Ydiff, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + blockWidth, Y1 + 2 * Ydiff, blockWidth, blockHeight, 3));
-        }
-
-        if (levelNumber == 3) {
-            ball.setDy(-6);
-            ball.setDx(6);
-            blocks.add(new Block(startX, Y1, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + (blockWidth / 2), Y1 + Ydiff + spacing, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), Y1 + Ydiff + spacing, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + blockWidth, Y1 + 2 * Ydiff + 2 * spacing, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1 + 2 * Ydiff + 2 * spacing, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, Y1 + 3 * Ydiff + 3 * spacing, blockWidth, blockHeight, 4));
-        }
-
-        if (levelNumber == 4) {
-            ball.setDy(6);
-            ball.setDx(6);
-            PaddleHight = 20;
-
-            int smallWidth = (int) (blockWidth * 0.7);
-            int medWidth = (int) (blockWidth * 0.85);
-
-            blocks.add(new Block(startX + blockWidth - 2 * spacing, Y1, smallWidth, blockHeight, 1));
-            blocks.add(new Block(startX + blockWidth - 2 * spacing + 2 * (smallWidth + spacing) + spacing, Y1, smallWidth, blockHeight, 1));
-            blocks.add(new Block(startX + blockWidth + spacing + spacing / 2, Y1 + Ydiff, smallWidth, blockHeight, 2));
-            blocks.add(new Block(startX + spacing * 2, Y1 + Ydiff, smallWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing) - spacing / 2, Y1 + Ydiff, smallWidth, blockHeight, 3));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 130, Y1 + Ydiff, smallWidth, blockHeight, 2));
-            blocks.add(new Block(startX + (blockWidth / 2) + (blockWidth + spacing), Y1 + 2 * Ydiff, medWidth, blockHeight, 2));
-            blocks.add(new Block(startX - spacing, Y1 + 2 * Ydiff, medWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 190, Y1 + 2 * Ydiff, medWidth, blockHeight, 2));
-            blocks.add(new Block(startX + spacing * 2, Y1 + 3 * Ydiff, smallWidth, blockHeight, 2));
-            blocks.add(new Block(startX + blockWidth + spacing + spacing / 2, Y1 + 3 * Ydiff, smallWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing) - spacing / 2, Y1 + 3 * Ydiff, smallWidth, blockHeight, 3));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing) + 130, Y1 + 3 * Ydiff, smallWidth, blockHeight, 2));
-            blocks.add(new Block(startX + blockWidth - 2 * spacing, Y1 + 4 * Ydiff, smallWidth, blockHeight, 1));
-            blocks.add(new Block(startX + blockWidth - 2 * spacing + 2 * (smallWidth + spacing) + spacing, Y1 + 4 * Ydiff, smallWidth, blockHeight, 1));
-        }
-
-        if (levelNumber == 5) {
-            ball.setDy(6);
-            ball.setDx(6);
-            PaddleHight = 50;
-
-            blocks.add(new Block(startX + blockWidth + spacing, Y1, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 4));
-
-            blocks.add(new Block(startX, Y1 + Ydiff, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 3));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 4));
-
-            blocks.add(new Block(startX, Y1 + 2 * Ydiff, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + blockWidth + spacing, Y1 + 2 * Ydiff, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1 + 2 * Ydiff, blockWidth, blockHeight, 4));
-
-            blocks.add(new Block(startX, Y1 + 3 * Ydiff, blockWidth, blockHeight, 1));
-            blocks.add(new Block(startX + blockWidth + spacing, Y1 + 3 * Ydiff, blockWidth, blockHeight, 2));
-            blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1 + 3 * Ydiff, blockWidth, blockHeight, 3));
-        }
-        if (levelNumber == 6) {
-            for (int row = 0; row < 5; row++) {
-                int rowY = Y1 + row * Ydiff;
-                for (int col = 0; col < 4; col++) {
-                    if ((row + col) % 2 == 0) continue; // create "holes"
-                    int x = startX + col * (blockWidth + spacing);
-                    blocks.add(new Block(x, rowY, blockWidth, blockHeight, (col % 3) + 1));
-                }
-            }
-        }
-        if (levelNumber == 1) {
-            for (int row = 0; row < 4; row++) {
-                int blocksInRow = 4 - row;
-                int rowY = Y1 + row * Ydiff;
-                int offsetX = startX + (blockWidth + spacing) * row / 2;
-
-                for (int col = 0; col < blocksInRow; col++) {
-                    int x = offsetX + col * (blockWidth + spacing);
-                    blocks.add(new Block(x, rowY, blockWidth, blockHeight, row + 1));
-                }
-            }
-        }
-
-
+        LevelLoader.LevelData levelData = LevelLoader.loadLevel(context, levelNumber, screenWidth, screenHeight);
+        this.blocks = levelData.blocks;
+        this.Power = new ArrayList<>();
+        this.PBalls = new ArrayList<>();
+        this.PaddleHight = levelData.paddleHeight;
+        this.ball.setDx(levelData.ballDx);
+        this.ball.setDy(levelData.ballDy);
     }
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
-        canvas.save();
-        canvas.clipRect(0, 0, getWidth(), gameAreaHeight);
-        canvas.drawColor(Color.DKGRAY);
+
+        if ((GameLose || GameWin) && waitForTapToEnd) {
+            drawGameOverScreen(canvas);
+            return;
+        }
 
         List<Block> toRemove = new ArrayList<>();
         List<Cirlce> powerRemove = new ArrayList<>();
         List<Cirlce> ballRemove = new ArrayList<>();
 
         for (Block block : blocks) {
-            canvas.drawRect(block.getX(), block.getY(), block.getRightEdge(), block.getBottomEdge(), block.getPaint());
-            if (Collision(block, ball) && block.getDurability() <= 0) {
-                Audio.playSound("pop", 1.0f);
-                if (block.getPowerUpChance() == 15) Power.add(block.getPowerUp());
-                toRemove.add(block);
-                score += 10;
+        PhysicsEngine.drawBlock(canvas, block);
+            if (PhysicsEngine.detectCollision(block, ball,
+                    () -> Audio.playSound("bounce", 1.0f),
+                    () -> { if (!GameLose) Audio.playSound("bounce", 1.0f); })) {
+                score += PhysicsEngine.tryDestroyBlock(block, Power, toRemove);
             }
         }
 
         for (Cirlce power : Power) {
             canvas.drawCircle(power.getX(), power.getY(), power.getR(), powerPaint);
-            Movement(power);
-            if (Collision(paddle, power) || power.getY() > gameAreaHeight) {
+            PhysicsEngine.move(power, getWidth(), gameAreaHeight, false, () -> {});
+            boolean hit = PhysicsEngine.detectCollision(paddle, power,
+                    () -> {},
+                    () -> { if (!GameLose) Audio.playSound("bounce", 1.0f); });
+            if (hit || power.getY() > gameAreaHeight) {
                 powerRemove.add(power);
-                if (Collision(paddle, power)) {
-                    PBalls.add(new Cirlce(power.getX(), power.getY() - 30, 30));
+                if (hit) {
+                    PBalls.addAll(PhysicsEngine.applyPowerEffect(power, paddle));
                 }
             }
         }
 
         for (Cirlce b : PBalls) {
             canvas.drawCircle(b.getX(), b.getY(), b.getR(), powerPaint);
-            Movement(b);
+            PhysicsEngine.move(b, getWidth(), gameAreaHeight, false, () -> {});
             for (Block block : blocks) {
-                if (Collision(block, b) && block.getDurability() <= 0) {
-                    Audio.playSound("pop", 1.0f);
-                    toRemove.add(block);
-                    score += 10;
+                if (PhysicsEngine.detectCollision(block, b,
+                        () -> Audio.playSound("bounce", 1.0f),
+                        () -> { if (!GameLose) Audio.playSound("bounce", 1.0f); })) {
+                    score += PhysicsEngine.tryDestroyBlock(block, Power, toRemove);
                 }
             }
             if (b.getY() > gameAreaHeight) ballRemove.add(b);
-            Collision(paddle, b);
+            PhysicsEngine.detectCollision(paddle, b,
+                    () -> {},
+                    () -> { if (!GameLose) Audio.playSound("bounce", 1.0f); });
         }
 
         blocks.removeAll(toRemove);
         Power.removeAll(powerRemove);
         PBalls.removeAll(ballRemove);
 
-        canvas.drawCircle(ball.getX(), ball.getY(), ball.getR(), ballPaint);
-        canvas.drawRect(paddle.getX(), paddle.getY(), paddle.getRightEdge(), paddle.getBottomEdge(), paddlePaint);
+        PhysicsEngine.drawCircle(canvas, ball, ballPaint);
+        PhysicsEngine.drawPaddle(canvas, paddle, paddlePaint);
 
-        Movement(ball);
-        Collision(paddle, ball);
+        PhysicsEngine.move(ball, getWidth(), gameAreaHeight, true, () -> GameLose = true);
+        PhysicsEngine.detectCollision(paddle, ball,
+                () -> {},
+                () -> { if (!GameLose) Audio.playSound("bounce", 1.0f); });
 
-        if (paddle.getCenterX() < touchX) paddle.moveHorizontally(5);
-        if (paddle.getCenterX() > touchX) paddle.moveHorizontally(-5);
+        PhysicsEngine.moveToward(paddle, touchX, 5);
 
-        canvas.restore();
         canvas.save();
         canvas.clipRect(0, gameAreaHeight, getWidth(), screenHeight);
         canvas.drawColor(Color.LTGRAY);
         canvas.drawText("Level: " + levelNumber + "   Score: " + score, 50, gameAreaHeight + 100, textPaint);
         canvas.restore();
 
-        if (blocks.isEmpty() && !GameWin) {
-            Audio.playSound("Win", 1.0f);
-            GameWin = true;
-            waitForTapToEnd = true;
-            HighScoreManager.reportScore(score);
-            canvas.drawText("YOU WIN", getWidth() / 2f - 180, gameAreaHeight / 2f, winPaint);
+        if (PhysicsEngine.didWin(blocks, GameWin)) {
+            handleGameOver(canvas, true);
         }
 
         if (GameLose && !isGameOverHandled) {
-            isGameOverHandled = true;
-            Audio.playSound("gameover", 1.0f);
-            HighScoreManager.reportScore(score);
-            waitForTapToEnd = true;
-            canvas.drawText("YOU LOSE", getWidth() / 2f - 180, gameAreaHeight / 2f, losePaint);
+            handleGameOver(canvas, false);
         }
+    }
+
+    private void drawGameOverScreen(Canvas canvas) {
+        canvas.save();
+        canvas.clipRect(0, 0, getWidth(), gameAreaHeight);
+        canvas.drawColor(Color.DKGRAY);
+
+        String msg = GameWin ? "YOU WIN" : "YOU LOSE";
+        Paint paint = GameWin ? winPaint : losePaint;
+        canvas.drawText(msg, getWidth() / 2f - 180, gameAreaHeight / 2f, paint);
+
+        canvas.restore();
     }
 
     @Override
@@ -336,50 +224,6 @@ public class BoardGame extends View {
             }
         }
         return true;
-    }
-
-    public boolean Collision(Objects a, Cirlce p) {
-        float ballLeft = p.getX() - p.getR();
-        float ballRight = p.getX() + p.getR();
-        float ballTop = p.getY() - p.getR();
-        float ballBottom = p.getY() + p.getR();
-
-        float blockLeft = a.getX();
-        float blockRight = a.getX() + a.getWidth();
-        float blockTop = a.getY();
-        float blockBottom = a.getY() + a.getHeight();
-
-        boolean collisionDetected = ballRight >= blockLeft && ballLeft <= blockRight && ballBottom >= blockTop && ballTop <= blockBottom;
-        if (!collisionDetected) return false;
-
-        float overlapLeft = ballRight - blockLeft;
-        float overlapRight = blockRight - ballLeft;
-        float overlapTop = ballBottom - blockTop;
-        float overlapBottom = blockBottom - ballTop;
-
-        if (Math.min(overlapTop, overlapBottom) < Math.min(overlapLeft, overlapRight)) {
-            p.setCMy();
-        } else {
-            p.setCMx();
-        }
-
-        if (a instanceof Block) {
-            Block block = (Block) a;
-            block.hitBlock();
-            if (block.getDurability() > 0) Audio.playSound("bounce", 1.0f);
-        } else {
-            if (!GameLose) Audio.playSound("bounce", 1.0f);
-        }
-
-        return true;
-    }
-
-    public void Movement(Cirlce p) {
-        p.setMMy();
-        p.setMMx();
-        if (p.getX() > getWidth() - p.getR() || p.getX() < p.getR()) p.setCMx();
-        if (p.getY() < p.getR()) p.setCMy();
-        if (p.getY() > gameAreaHeight - p.getR() && p == ball) GameLose = true;
     }
 
     public int getScore() {
@@ -427,5 +271,29 @@ public class BoardGame extends View {
             touchX -= 5;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void stopGameThreadSafely() {
+        if (gameThread != null && gameThread.isRunning) {
+            gameThread.stopThread();
+            try {
+                gameThread.join();
+            } catch (InterruptedException e) {
+                Log.e("BoardGame", "Thread error", e);
+            }
+        }
+    }
+
+    private void handleGameOver(Canvas canvas, boolean win) {
+        isGameOverHandled = true;
+        GameWin = win;
+        waitForTapToEnd = true;
+
+        Audio.playSound(win ? "Win" : "gameover", 1.0f);
+        HighScoreManager.reportScore(score);
+
+        Paint paint = win ? winPaint : losePaint;
+        String message = win ? "YOU WIN" : "YOU LOSE";
+        canvas.drawText(message, getWidth() / 2f - 180, gameAreaHeight / 2f, paint);
     }
 }
