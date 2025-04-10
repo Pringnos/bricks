@@ -42,15 +42,7 @@ public class LevelLoader {
 
         switch (levelNumber) {
             case 1:
-                for (int row = 0; row < 4; row++) {
-                    int blocksInRow = 4 - row;
-                    int rowY = Y1 + row * Ydiff;
-                    int offsetX = startX + (blockWidth + spacing) * row / 2;
-                    for (int col = 0; col < blocksInRow; col++) {
-                        int x = offsetX + col * (blockWidth + spacing);
-                        blocks.add(new Block(x, rowY, blockWidth, blockHeight, row + 1));
-                    }
-                }
+                blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 1));
                 break;
 
             case 2:
@@ -83,3 +75,12 @@ public class LevelLoader {
         return new LevelData(blocks, paddleHeight, ballDx, ballDy);
     }
 }
+//for (int row = 0; row < 4; row++) {
+//                    int blocksInRow = 4 - row;
+//                    int rowY = Y1 + row * Ydiff;
+//                    int offsetX = startX + (blockWidth + spacing) * row / 2;
+//                    for (int col = 0; col < blocksInRow; col++) {
+//                        int x = offsetX + col * (blockWidth + spacing);
+//                        blocks.add(new Block(x, rowY, blockWidth, blockHeight, row + 1));
+//                    }
+//                }

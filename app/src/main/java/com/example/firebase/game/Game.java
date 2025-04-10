@@ -1,5 +1,6 @@
 package com.example.firebase.game;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.FrameLayout;
@@ -35,7 +36,6 @@ public class Game extends AppCompatActivity {
         boardGame.setFocusable(true);
         boardGame.setFocusableInTouchMode(true);
         boardGame.requestFocus();
-
         startService(intent1);
 
         FrameLayout framelayout =(FrameLayout)findViewById(R.id.MFRM);

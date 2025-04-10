@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -20,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,10 +42,9 @@ public class BoardGame extends View {
     private boolean pause = false;
     private boolean Apause = false;
     private boolean sizeInitialized = false;
-
     private int PaddleHight = 0;
     private int score = 0;
-
+    private Texttospeech t;
     private Paint ballPaint, paddlePaint, textPaint, winPaint, losePaint, powerPaint;
     private Objects paddle;
     private Cirlce ball;
@@ -51,11 +52,11 @@ public class BoardGame extends View {
     private GameThread gameThread;
     private Handler gameHandler;
     static final long fps = 20;
-
     public BoardGame(Context context, int levelNumber) {
         super(context);
         this.context = context;
         this.levelNumber = levelNumber;
+        t = new Texttospeech(BoardGame.this.context);
 
         gameHandler = new Handler(msg -> {
             if (!pause && !Apause) invalidate();
@@ -82,8 +83,11 @@ public class BoardGame extends View {
 
     public void destroy() {
         stopGameThreadSafely();
-        Audio.release(); // Release sounds
+        Audio.release();
+        t.shutdown();
         Log.d("BoardGame", "Resources released and game thread stopped.");
+
+
     }
 
     @Override
@@ -217,10 +221,21 @@ public class BoardGame extends View {
             if (!GameWin && !GameLose && event.getY() < gameAreaHeight) {
                 touchX = event.getX();
             } else if (waitForTapToEnd && context instanceof android.app.Activity) {
+                if(GameWin) {
+                    GameLose = false;
+                    GameWin = false;
+                    waitForTapToEnd = false;
+                    isGameOverHandled = false;
+                    levelNumber++;
+                    initializeLevel();
+                    invalidate();
+                }
+                else {
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra("score", score);
                 ((android.app.Activity) context).setResult(android.app.Activity.RESULT_OK, resultIntent);
                 ((android.app.Activity) context).finish();
+                }
             }
         }
         return true;
@@ -270,6 +285,7 @@ public class BoardGame extends View {
             paddle.moveHorizontally(-5);
             touchX -= 5;
         }
+
         return super.onKeyDown(keyCode, event);
     }
 
@@ -285,15 +301,31 @@ public class BoardGame extends View {
     }
 
     private void handleGameOver(Canvas canvas, boolean win) {
+        Intent intent1=new Intent(BoardGame.this.context, MusicService.class);
+
+
         isGameOverHandled = true;
         GameWin = win;
         waitForTapToEnd = true;
+        if(win) {
+            intent1.setAction("PAUSE");
+            context.startService(intent1);
+        }
+        else if(!win)
+            context.stopService(intent1);
 
         Audio.playSound(win ? "Win" : "gameover", 1.0f);
         HighScoreManager.reportScore(score);
 
         Paint paint = win ? winPaint : losePaint;
         String message = win ? "YOU WIN" : "YOU LOSE";
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            t.speak(message);
+        }, 2000);
+
         canvas.drawText(message, getWidth() / 2f - 180, gameAreaHeight / 2f, paint);
+
+
     }
 }
