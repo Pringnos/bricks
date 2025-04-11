@@ -100,8 +100,8 @@ public class BoardGame extends View {
         stopGameThreadSafely();
 
         ballPaint = new Paint(); ballPaint.setColor(Color.BLUE);
-        paddlePaint = new Paint(); paddlePaint.setColor(Color.BLACK);
-        powerPaint = new Paint(); powerPaint.setColor(Color.rgb(127, 0, 255));
+        paddlePaint = new Paint(); paddlePaint.setColor(Color.CYAN);
+        powerPaint = new Paint(); powerPaint.setColor(Color.MAGENTA);
         textPaint = new Paint(); textPaint.setColor(Color.WHITE); textPaint.setTextSize(50);
         winPaint = new Paint(); winPaint.setColor(Color.BLUE); winPaint.setTextSize(80);
         losePaint = new Paint(); losePaint.setColor(Color.GRAY); losePaint.setTextSize(50);

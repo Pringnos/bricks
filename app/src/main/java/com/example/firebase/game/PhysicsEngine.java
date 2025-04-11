@@ -108,7 +108,7 @@ public class PhysicsEngine {
     public static int tryDestroyBlock(Block block, List<Cirlce> powerList, List<Block> toRemove) {
         if (block.getDurability() <= 0) {
             Audio.playSound("pop", 1.0f);
-            if (block.getPowerUpChance() == 15 && powerList != null) {
+            if (block.getPowerUpChance() == 1 && powerList != null) {
                 powerList.add(block.getPowerUp());
             }
             toRemove.add(block);

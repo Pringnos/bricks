@@ -42,7 +42,24 @@ public class LevelLoader {
 
         switch (levelNumber) {
             case 1:
-                blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 1));
+                int smallWidth = (int) (blockWidth * 0.7);
+                int medWidth = (int) (blockWidth * 0.85);
+
+                blocks.add(new Block(startX + blockWidth - 2 * spacing, Y1, smallWidth, blockHeight, 1));
+                blocks.add(new Block(startX + blockWidth - 2 * spacing + 2 * (smallWidth + spacing) + spacing, Y1, smallWidth, blockHeight, 1));
+                blocks.add(new Block(startX + blockWidth + spacing + spacing / 2, Y1 + Ydiff, smallWidth, blockHeight, 2));
+                blocks.add(new Block(startX + spacing * 2, Y1 + Ydiff, smallWidth, blockHeight, 2));
+                blocks.add(new Block(startX + 2 * (blockWidth + spacing) - spacing / 2, Y1 + Ydiff, smallWidth, blockHeight, 3));
+                blocks.add(new Block(startX + 2 * (blockWidth + spacing) + blockWidth - spacing, Y1 + Ydiff, smallWidth, blockHeight, 2));
+                blocks.add(new Block(startX + (blockWidth / 2) + (blockWidth + spacing), Y1 + 2 * Ydiff, medWidth, blockHeight, 2));
+                blocks.add(new Block(startX - spacing, Y1 + 2 * Ydiff, medWidth, blockHeight, 2));
+                blocks.add(new Block(startX + 2 * (blockWidth + spacing) + blockWidth, Y1 + 2 * Ydiff, medWidth, blockHeight, 2));
+                blocks.add(new Block(startX + spacing * 2, Y1 + 3 * Ydiff, smallWidth, blockHeight, 2));
+                blocks.add(new Block(startX + blockWidth + spacing + spacing / 2, Y1 + 3 * Ydiff, smallWidth, blockHeight, 2));
+                blocks.add(new Block(startX + 2 * (blockWidth + spacing) - spacing / 2, Y1 + 3 * Ydiff, smallWidth, blockHeight, 3));
+                blocks.add(new Block(startX + 2 * (blockWidth + spacing) + blockWidth - spacing, Y1 + 3 * Ydiff, smallWidth, blockHeight, 2));
+                blocks.add(new Block(startX + blockWidth - 2 * spacing, Y1 + 4 * Ydiff, smallWidth, blockHeight, 1));
+                blocks.add(new Block(startX + blockWidth - 2 * spacing + 2 * (smallWidth + spacing) + spacing, Y1 + 4 * Ydiff, smallWidth, blockHeight, 1));
                 break;
 
             case 2:
@@ -55,8 +72,6 @@ public class LevelLoader {
                 break;
 
             case 3:
-                ballDx = 6;
-                ballDy = -6;
                 blocks.add(new Block(startX, Y1, blockWidth, blockHeight, 1));
                 blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 1));
                 blocks.add(new Block(startX + (blockWidth / 2), Y1 + Ydiff + spacing, blockWidth, blockHeight, 2));
@@ -66,8 +81,29 @@ public class LevelLoader {
                 blocks.add(new Block(startX + (blockWidth / 2) + blockWidth + spacing, Y1 + 3 * Ydiff + 3 * spacing, blockWidth, blockHeight, 4));
                 break;
 
-            // Additional cases (4, 5, 6...) can be added here.
+            case 4:
+                blocks.add(new Block(startX + blockWidth + spacing, Y1, blockWidth, blockHeight, 2));
+                blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 3));
+                blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1, blockWidth, blockHeight, 4));
 
+                blocks.add(new Block(startX, Y1 + Ydiff, blockWidth, blockHeight, 1));
+                blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 3));
+                blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 4));
+
+                blocks.add(new Block(startX, Y1 + 2 * Ydiff, blockWidth, blockHeight, 1));
+                blocks.add(new Block(startX + blockWidth + spacing, Y1 + 2 * Ydiff, blockWidth, blockHeight, 2));
+                blocks.add(new Block(startX + 3 * (blockWidth + spacing), Y1 + 2 * Ydiff, blockWidth, blockHeight, 4));
+
+                blocks.add(new Block(startX, Y1 + 3 * Ydiff, blockWidth, blockHeight, 1));
+                blocks.add(new Block(startX + blockWidth + spacing, Y1 + 3 * Ydiff, blockWidth, blockHeight, 2));
+                blocks.add(new Block(startX + 2 * (blockWidth + spacing), Y1 + 3 * Ydiff, blockWidth, blockHeight, 3));
+                break;
+
+            case 5:
+                blocks.add(new Block(startX, Y1, blockWidth, blockHeight, 1));
+                blocks.add(new Block(startX + (blockWidth / 2) + 2 * (blockWidth + spacing), Y1 + Ydiff, blockWidth, blockHeight, 2));
+                blocks.add(new Block(startX + blockWidth, Y1 + 2 * Ydiff, blockWidth, blockHeight, 1));
+                break;
             default:
                 break;
         }

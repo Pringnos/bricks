@@ -15,7 +15,7 @@ public class Block extends Objects {
         super(x, y, width, height);
         paint = new Paint();
         this.durability = durability;
-        //this.powerUpChance  = (int)(Math.random() * 15 + 1);
+        //this.powerUpChance  = (int)(Math.random() * 5 + 1);
         this.powerUpChance  = 15;
         if (durability==1)
             paint.setColor(Color.YELLOW);
@@ -24,7 +24,7 @@ public class Block extends Objects {
         else if (durability==3)
             paint.setColor(Color.RED);
         else
-            paint.setColor(Color.BLACK);
+            paint.setColor(Color.WHITE);
         powerUp = new Cirlce(getCenterX(),getCenterY());
     }
 
@@ -43,7 +43,7 @@ public class Block extends Objects {
             else if (durability==3)
                 paint.setColor(Color.RED);
             else
-                paint.setColor(Color.BLACK);
+                paint.setColor(Color.WHITE);
         }
         return durability;
     }
