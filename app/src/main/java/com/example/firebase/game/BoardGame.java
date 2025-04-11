@@ -208,9 +208,11 @@ public class BoardGame extends View {
         canvas.clipRect(0, 0, getWidth(), gameAreaHeight);
         canvas.drawColor(Color.DKGRAY);
 
-        String msg = GameWin ? "YOU WIN" : "YOU LOSE";
+        String message = getGameOverMessage();
+
         Paint paint = GameWin ? winPaint : losePaint;
-        canvas.drawText(msg, getWidth() / 2f - 180, gameAreaHeight / 2f, paint);
+        float textWidth = paint.measureText(message);
+        canvas.drawText(message, (getWidth() - textWidth) / 2f, gameAreaHeight / 2f, paint);
 
         canvas.restore();
     }
@@ -326,15 +328,18 @@ public class BoardGame extends View {
         Audio.playSound(win ? "Win" : "gameover", 1.0f);
         HighScoreManager.reportScore(score);
 
-        Paint paint = win ? winPaint : losePaint;
-        String message = win ? "YOU WIN" : "YOU LOSE";
+        String message = getGameOverMessage();
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             t.speak(message);
         }, 2000);
 
-        canvas.drawText(message, getWidth() / 2f - 180, gameAreaHeight / 2f, paint);
+    }
 
-
+    private String getGameOverMessage() {
+        boolean isFinalLevel = levelNumber == LevelLoader.MAX_LEVEL;
+        return GameWin
+                ? (isFinalLevel ? "YOU WIN" : "LEVEL COMPLETED")
+                : "YOU LOSE";
     }
 }

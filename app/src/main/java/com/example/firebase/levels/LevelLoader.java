@@ -11,6 +11,7 @@ import java.util.List;
 
 public class LevelLoader {
 
+    public static final int MAX_LEVEL = 5;
     public static class LevelData {
         public final List<Block> blocks;
         public final List<Cirlce> powerUps = new ArrayList<>();
@@ -111,12 +112,3 @@ public class LevelLoader {
         return new LevelData(blocks, paddleHeight, ballDx, ballDy);
     }
 }
-//for (int row = 0; row < 4; row++) {
-//                    int blocksInRow = 4 - row;
-//                    int rowY = Y1 + row * Ydiff;
-//                    int offsetX = startX + (blockWidth + spacing) * row / 2;
-//                    for (int col = 0; col < blocksInRow; col++) {
-//                        int x = offsetX + col * (blockWidth + spacing);
-//                        blocks.add(new Block(x, rowY, blockWidth, blockHeight, row + 1));
-//                    }
-//                }

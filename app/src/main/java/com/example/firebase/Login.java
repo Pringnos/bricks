@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -37,12 +38,20 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
         progressBar = findViewById(R.id.progressBar);
+        ImageButton backButton = findViewById(R.id.backButton);
 
         TextView registerLink = findViewById(R.id.registerLink);
         registerLink.setOnClickListener(v -> {
             // Navigate to the Register activity
             Intent intent = new Intent(Login.this, Register.class);
             startActivity(intent);
+        });
+
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Login.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
         });
 
         // Set up UI Insets

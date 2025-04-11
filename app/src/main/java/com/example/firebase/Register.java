@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,11 +44,19 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
         registerButton = findViewById(R.id.SB);
         progressBar = findViewById(R.id.progressBar);
         TextView loginLink = findViewById(R.id.loginLink);
+        ImageButton backButton = findViewById(R.id.backButton);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Register.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
         });
 
         registerButton.setOnClickListener(this);
