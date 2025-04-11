@@ -118,8 +118,16 @@ public class BoardGame extends View {
         this.Power = new ArrayList<>();
         this.PBalls = new ArrayList<>();
         this.PaddleHight = levelData.paddleHeight;
-        this.ball.setDx(levelData.ballDx);
-        this.ball.setDy(levelData.ballDy);
+
+        // Reset ball position to center and above the paddle
+        float startX = screenWidth / 2f;
+        float startY = gameAreaHeight - 100 - PaddleHight;
+        ball.setX(startX);
+        ball.setY(startY);
+
+        // Reset direction: dx from level, dy forced upward
+        ball.setDx(levelData.ballDx);
+        ball.setDy(-Math.abs(levelData.ballDy)); // Always go up at start
     }
 
     @Override
@@ -223,7 +231,8 @@ public class BoardGame extends View {
             if (!GameWin && !GameLose && event.getY() < gameAreaHeight) {
                 touchX = event.getX();
             } else if (waitForTapToEnd && context instanceof android.app.Activity) {
-                if(GameWin) {
+                if (GameWin && levelNumber < LevelLoader.MAX_LEVEL) {
+                    // Just completed a level, go to the next one
                     GameLose = false;
                     GameWin = false;
                     waitForTapToEnd = false;
@@ -231,12 +240,12 @@ public class BoardGame extends View {
                     levelNumber++;
                     initializeLevel();
                     invalidate();
-                }
-                else {
-                Intent resultIntent = new Intent();
-                resultIntent.putExtra("score", score);
-                ((android.app.Activity) context).setResult(android.app.Activity.RESULT_OK, resultIntent);
-                ((android.app.Activity) context).finish();
+                } else {
+                    // Either lost or beat final level → exit
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("score", score);
+                    ((android.app.Activity) context).setResult(android.app.Activity.RESULT_OK, resultIntent);
+                    ((android.app.Activity) context).finish();
                 }
             }
         }

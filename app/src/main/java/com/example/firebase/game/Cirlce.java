@@ -19,7 +19,15 @@ public class Cirlce {
         dy = 3;
     }
 
+    public Cirlce setX(float x) {
+        this.x = x;
+        return this;
+    }
 
+    public Cirlce setY(float y) {
+        this.y = y;
+        return this;
+    }
 
 
     public void setMMy() {
