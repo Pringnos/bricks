@@ -277,13 +277,22 @@ public class BoardGame extends View {
             Apause = !Apause;
             return true;
         }
+        // arrow right
         if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
-            paddle.moveHorizontally(5);
-            touchX += 5;
+            paddle.moveHorizontally(15);
+            touchX += 15;
         }
+        // arrow left
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
-            paddle.moveHorizontally(-5);
-            touchX -= 5;
+            paddle.moveHorizontally(-15);
+            touchX -= 15;
+        }
+
+        // zero to instantly pass the stage
+        if (keyCode == KeyEvent.KEYCODE_0 && !GameWin && !GameLose) {
+            blocks.clear(); // instantly empty blocks
+            invalidate();   // force redraw to trigger win logic
+            return true;
         }
 
         return super.onKeyDown(keyCode, event);
