@@ -61,21 +61,15 @@ public class PhysicsEngine {
         return c.getY() > gameAreaHeight;
     }
 
-    // Moves the paddle left or right toward a target X position using a fixed speed
-    public static void moveToward(Objects paddle, float touchX) {
-        float centerX = paddle.getCenterX();
-        if (centerX < touchX) {
-            paddle.moveHorizontally(5);
-        } else if (centerX > touchX) {
-            paddle.moveHorizontally(-5);
-        }
-    }
-
     // Moves the paddle toward a target X position using a specified speed
     public static void moveToward(Objects paddle, float targetX, float speed) {
         float center = paddle.getCenterX();
-        if (center < targetX) paddle.moveHorizontally(speed);
-        else if (center > targetX) paddle.moveHorizontally(-speed);
+        float dx = targetX - center;
+
+        if (Math.abs(dx) < speed) return;
+
+        if (dx > 0) paddle.moveHorizontally(speed);
+        else paddle.moveHorizontally(-speed);
     }
 
     // Returns true if all blocks are cleared and the player hasn't already won
