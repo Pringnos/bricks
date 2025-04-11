@@ -12,8 +12,14 @@ public class PhysicsEngine {
     public static void move(Cirlce p, int width, int gameAreaHeight, boolean isMainBall, Runnable onBallLost) {
         p.setMMy();
         p.setMMx();
-        if (p.getX() > width - p.getR() || p.getX() < p.getR()) p.setCMx();
-        if (p.getY() < p.getR()) p.setCMy();
+        if (p.getX() > width - p.getR() || p.getX() < p.getR()) {
+            p.setCMx();
+            Audio.playSound("bounce", 1.0f); // side wall bounce sound
+        }
+        if (p.getY() < p.getR()) {
+            p.setCMy();
+            Audio.playSound("bounce", 1.0f); // top wall bounce sound
+        }
         if (isMainBall && p.getY() > gameAreaHeight - p.getR()) onBallLost.run();
     }
 
