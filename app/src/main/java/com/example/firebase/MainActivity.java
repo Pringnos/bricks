@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ActivityResultLauncher<Intent> loginActivityLauncher;
     private ActivityResultLauncher<Intent> playActivityLauncher;
     private Button registerButton, loginButton, playButton, playAsGuestButton, logoutButton, highScoresButton;
-    private TextView scoreTextView, welcomeTextView;
+    private TextView scoreTextView, welcomeTextView, highScoreTextView;
     private FirebaseAuth firebaseAuth;
 
     @SuppressLint("SetTextI18n")
@@ -74,8 +74,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         loginButton = findViewById(R.id.LB);
         logoutButton = findViewById(R.id.logoutButton);
         highScoresButton = findViewById(R.id.highScoresButton);
+        highScoreTextView = findViewById(R.id.highScoreTextView);
 
         scoreTextView.setText("Score: " + score);
+        loadHighScore();
 
         // Adjust window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -152,5 +154,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
             });
         }
+    }
+    private void loadHighScore() {
+        HighScoreManager.getHighScore(highScore -> {
+            highScoreTextView.setText("High Score: " + highScore);
+            highScoreTextView.setVisibility(View.VISIBLE);
+        });
     }
 }

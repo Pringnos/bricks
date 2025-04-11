@@ -11,4 +11,8 @@ public class UserScore {
         this.name = name;
         this.score = score;
     }
+
+    public int getScore() {
+        return this.score;
+    }
 }

@@ -83,6 +83,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="20dp" />
 
+    <!-- High Score Text -->
+    <TextView
+        android:id="@+id/highScoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="High Score:"
+        android:textSize="18sp"
+        android:padding="8dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/ST"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
+
     <Button
         android:id="@+id/playAsGuestButton"
         android:layout_width="wrap_content"
