@@ -334,17 +334,17 @@ public class BoardGame extends View {
 
     private void handleGameOver(Canvas canvas, boolean win) {
         Intent intent1=new Intent(BoardGame.this.context, MusicService.class);
-        pause = true;
 
         isGameOverHandled = true;
         GameWin = win;
         waitForTapToEnd = true;
+
         if(win) {
             intent1.setAction("PAUSE");
             context.startService(intent1);
-        }
-        else if(!win)
+        } else {
             context.stopService(intent1);
+        }
 
         Audio.playSound(win ? "Win" : "gameover", 1.0f);
         HighScoreManager.reportScore(score);
