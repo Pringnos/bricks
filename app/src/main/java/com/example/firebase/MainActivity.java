@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         highScoreTextView = findViewById(R.id.highScoreTextView);
 
         scoreTextView.setText("Score: " + score);
-        loadHighScore();
 
         // Adjust window insets
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -113,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             loginButton.setVisibility(View.GONE);
             registerButton.setVisibility(View.GONE);
             logoutButton.setVisibility(View.VISIBLE);
+
+            loadHighScore();
         } else {
             welcomeTextView.setText(getString(R.string.welcome_guest));
             scoreTextView.setVisibility(View.GONE);
@@ -121,6 +122,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             loginButton.setVisibility(View.VISIBLE);
             registerButton.setVisibility(View.VISIBLE);
             logoutButton.setVisibility(View.GONE);
+
+            highScoreTextView.setVisibility(View.GONE);
         }
     }
 
