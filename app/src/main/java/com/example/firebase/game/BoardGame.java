@@ -124,6 +124,11 @@ public class BoardGame extends View {
         float startY = gameAreaHeight - 100 - PaddleHight;
         ball.setX(startX);
         ball.setY(startY);
+        if (levelNumber != 1){
+            Intent intent1=new Intent(BoardGame.this.context, MusicService.class);
+            context.startService(intent1);
+            pause = false;
+        }
 
         // Reset direction: dx from level, dy forced upward
         ball.setDx(levelData.ballDx);
@@ -284,8 +289,15 @@ public class BoardGame extends View {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_1) {
+        if (keyCode == KeyEvent.KEYCODE_1 && !isGameOverHandled) {
             Apause = !Apause;
+            Intent intent1=new Intent(BoardGame.this.context, MusicService.class);
+            if(Apause){
+                intent1.setAction("PAUSE");
+                context.startService(intent1);
+            }
+                else
+                    context.startService(intent1);
             return true;
         }
         // arrow right
@@ -322,7 +334,7 @@ public class BoardGame extends View {
 
     private void handleGameOver(Canvas canvas, boolean win) {
         Intent intent1=new Intent(BoardGame.this.context, MusicService.class);
-
+        pause = true;
 
         isGameOverHandled = true;
         GameWin = win;
