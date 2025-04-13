@@ -17,7 +17,7 @@ public class HighScoreManager {
     public interface HighScoreCallback {
         void onHighScoreFetched(int score);
     }
-    public static void reportScore(int score) {
+    public static void reportScore(int newScore) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
 
@@ -27,15 +27,31 @@ public class HighScoreManager {
             name = "Anonymous";
         }
 
-        // Create a userScore object
-        UserScore userScore = new UserScore(name, score);
-
+        String finalName = name;
         FirebaseDatabase.getInstance()
                 .getReference("high_scores")
                 .child(uid)
-                .setValue(userScore)
-                .addOnSuccessListener(aVoid -> Log.d("HighScoreManager", "Score updated"))
-                .addOnFailureListener(e -> Log.e("HighScoreManager", "Score update failed", e));
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        UserScore existingScore = snapshot.getValue(UserScore.class);
+                        int savedScore = existingScore != null ? existingScore.getScore() : 0;
+
+                        if (newScore > savedScore) {
+                            UserScore userScore = new UserScore(finalName, newScore);
+                            snapshot.getRef().setValue(userScore)
+                                    .addOnSuccessListener(aVoid -> Log.d("HighScoreManager", "High score updated"))
+                                    .addOnFailureListener(e -> Log.e("HighScoreManager", "Score update failed", e));
+                        } else {
+                            Log.d("HighScoreManager", "Score not higher. No update.");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("HighScoreManager", "Failed to check existing high score", error.toException());
+                    }
+                });
     }
 
     public static void getHighScore(HighScoreCallback callback) {

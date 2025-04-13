@@ -1,3 +1,4 @@
+<!-- Enhanced MainActivity Layout -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -5,7 +6,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:padding="24dp"
     android:background="@drawable/dark_gradient_background"
     tools:context=".MainActivity">
 
@@ -14,11 +15,11 @@
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Brick Breaker"
-        android:textSize="32sp"
+        android:text="🎮 Brick Breaker"
+        android:textSize="34sp"
         android:textStyle="bold"
         android:textColor="@android:color/white"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="36dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -30,129 +31,124 @@
         android:layout_height="wrap_content"
         android:text="Welcome!"
         android:textSize="20sp"
-        android:textStyle="bold"
         android:textColor="@android:color/white"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/titleTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Score Text -->
+    <!-- Score Info -->
     <TextView
         android:id="@+id/ST"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Score:"
-        android:textSize="20sp"
-        android:padding="8dp"
+        android:textSize="18sp"
         android:textColor="@android:color/white"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/userNameTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- High Score Text -->
     <TextView
         android:id="@+id/highScoreTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="High Score:"
         android:textSize="18sp"
-        android:padding="8dp"
         android:textColor="@android:color/white"
+        android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@id/ST"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Login Button -->
-    <Button
-        android:id="@+id/LB"
-        android:layout_width="wrap_content"
+    <!-- Buttons Container -->
+    <LinearLayout
+        android:id="@+id/buttonGroup"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:textSize="18sp"
-        android:background="@drawable/neon_button_background"
-        android:textColor="@android:color/white"
-        android:padding="12dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="32dp"
         app:layout_constraintTop_toBottomOf="@id/highScoreTextView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- Register Button -->
-    <Button
-        android:id="@+id/RB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:textSize="18sp"
-        android:background="@drawable/neon_button_background"
-        android:textColor="@android:color/white"
-        android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/LB"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+        <Button
+            android:id="@+id/LB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:textSize="18sp"
+            android:background="@drawable/neon_button_background"
+            android:textColor="@android:color/white"
+            android:padding="12dp" />
 
-    <!-- Play Button -->
-    <Button
-        android:id="@+id/PB"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Play"
-        android:textSize="18sp"
-        android:background="@drawable/neon_button_background"
-        android:textColor="@android:color/white"
-        android:padding="12dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/RB"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="100dp" />
+        <View android:layout_height="12dp" android:layout_width="match_parent" />
 
-    <!-- Play As Guest Button -->
-    <Button
-        android:id="@+id/playAsGuestButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Play As Guest"
-        android:textSize="18sp"
-        android:background="@drawable/neon_button_background"
-        android:textColor="@android:color/white"
-        android:padding="12dp"
-        app:layout_constraintTop_toBottomOf="@id/RB"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="200dp" />
+        <Button
+            android:id="@+id/RB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:textSize="18sp"
+            android:background="@drawable/neon_button_background"
+            android:textColor="@android:color/white"
+            android:padding="12dp" />
 
-    <!-- High Scores Button -->
+        <View android:layout_height="12dp" android:layout_width="match_parent" />
+
+        <Button
+            android:id="@+id/PB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play"
+            android:textSize="18sp"
+            android:background="@drawable/neon_button_background"
+            android:textColor="@android:color/white"
+            android:padding="12dp"
+            android:visibility="gone" />
+
+        <View android:layout_height="12dp" android:layout_width="match_parent" />
+
+        <Button
+            android:id="@+id/playAsGuestButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play As Guest"
+            android:textSize="18sp"
+            android:background="@drawable/neon_button_background"
+            android:textColor="@android:color/white"
+            android:padding="12dp" />
+    </LinearLayout>
+
+    <!-- Footer Buttons -->
     <Button
         android:id="@+id/highScoresButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="High Scores"
+        android:text="🏆 High Scores"
         android:textSize="16sp"
         android:background="@drawable/neon_button_background"
         android:textColor="@android:color/white"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="30dp"
-        android:layout_marginStart="30dp" />
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="30dp" />
 
-    <!-- Logout Button -->
     <Button
         android:id="@+id/logoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Logout"
+        android:text="🚪 Logout"
         android:textSize="16sp"
         android:background="@drawable/neon_button_background"
         android:textColor="@android:color/white"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="30dp"
-        android:layout_marginEnd="30dp" />
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
