@@ -152,10 +152,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_SHORT).show();
             displayUserNameAndUpdateButtons(); // Refresh UI after logout
         } else if (view == highScoresButton) {
-            highScoresButton.setOnClickListener(v -> {
-                Intent intent = new Intent(MainActivity.this, HighScore.class);
-                startActivity(intent);
-            });
+            Intent intent = new Intent(MainActivity.this, HighScore.class);
+            startActivity(intent);
         }
     }
     private void loadHighScore() {
