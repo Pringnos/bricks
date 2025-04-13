@@ -2,6 +2,7 @@ package com.example.firebase.game;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
@@ -24,9 +25,14 @@ public class MusicService extends Service {
             pauseMusic();
             return START_STICKY;
         }
+
+        SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
+        int savedVolumePercent = prefs.getInt("volume", 50); // Default: 50%
         AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
-                audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+
+        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        int newVolume = Math.round((savedVolumePercent / 100f) * maxVolume);
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, newVolume, 0);
 
 
         if (mediaPlayer == null) {

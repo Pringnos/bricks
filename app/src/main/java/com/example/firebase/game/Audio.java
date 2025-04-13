@@ -1,6 +1,7 @@
 package com.example.firebase.game;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.AudioAttributes;
 import android.media.SoundPool;
 import android.util.Log;
@@ -36,11 +37,13 @@ public class Audio {
         });
     }
 
-    public static void playSound(String soundName, float volume) {
+    public static void playSound(Context context, String soundName) {
         if (!isLoaded) return;
 
         Integer soundId = soundMap.get(soundName);
         if (soundId != null) {
+            SharedPreferences prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+            float volume = prefs.getInt("volume", 50) / 100f;
             float finalVolume = Math.min(Math.max(volume, 0.0f), 1.0f); // Clamp volume
             soundPool.play(soundId, finalVolume, finalVolume, 1, 0, 1);
         }

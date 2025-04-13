@@ -1,5 +1,6 @@
 package com.example.firebase.game;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -9,16 +10,16 @@ import java.util.List;
 public class PhysicsEngine {
 
     // Moves the ball or power-up, handles wall bounce, and invokes callback if main ball falls below
-    public static boolean move(Cirlce p, int width, int gameAreaHeight, boolean isMainBall) {
+    public static boolean move(Context context, Cirlce p, int width, int gameAreaHeight, boolean isMainBall) {
         p.setMMy();
         p.setMMx();
         if (p.getX() > width - p.getR() || p.getX() < p.getR()) {
             p.setCMx();
-            Audio.playSound("bounce", 1.0f); // side wall bounce sound
+            Audio.playSound(context, "bounce"); // side wall bounce sound
         }
         if (p.getY() < p.getR()) {
             p.setCMy();
-            Audio.playSound("bounce", 1.0f); // top wall bounce sound
+            Audio.playSound(context, "bounce"); // top wall bounce sound
         }
         return isMainBall && p.getY() > gameAreaHeight - p.getR();
     }
@@ -107,9 +108,9 @@ public class PhysicsEngine {
     }
 
     // Checks if a block should be destroyed and handles pop sound, power-up drop, and removal
-    public static int tryDestroyBlock(Block block, List<Cirlce> powerList, List<Block> toRemove) {
+    public static int tryDestroyBlock(Context context, Block block, List<Cirlce> powerList, List<Block> toRemove) {
         if (block.getDurability() <= 0) {
-            Audio.playSound("pop", 1.0f);
+            Audio.playSound(context, "pop");
             if (block.getPowerUpChance() == 1 && powerList != null) {
                 powerList.add(block.getPowerUp());
             }

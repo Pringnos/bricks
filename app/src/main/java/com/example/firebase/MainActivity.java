@@ -62,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 result -> { }
         );
 
+        ImageButton volumeButton = findViewById(R.id.volumeButton);
+        volumeButton.setOnClickListener(v -> showVolumeDialog());
+
         // Get score from intent
         Intent intent = getIntent();
         int score = intent.hasExtra("score") ? intent.getIntExtra("score", 0) : 0;
@@ -98,6 +101,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         displayUserNameAndUpdateButtons();
     }
 
+    private void showVolumeDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle("Adjust Volume");
+
+        final android.widget.SeekBar seekBar = new android.widget.SeekBar(this);
+        seekBar.setMax(100);
+
+        // Load volume from SharedPreferences
+        android.content.SharedPreferences prefs = getSharedPreferences("settings", MODE_PRIVATE);
+        int savedVolume = prefs.getInt("volume", 50);
+        seekBar.setProgress(savedVolume);
+
+        builder.setView(seekBar);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            int volume = seekBar.getProgress();
+            prefs.edit().putInt("volume", volume).apply();
+            Toast.makeText(MainActivity.this, "Volume set to " + volume, Toast.LENGTH_SHORT).show();
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
     private void displayUserNameAndUpdateButtons() {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
