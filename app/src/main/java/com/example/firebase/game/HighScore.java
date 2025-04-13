@@ -3,6 +3,7 @@ package com.example.firebase.game;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -51,9 +52,7 @@ public class HighScore extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Log.e("HighScore", "Failed to fetch top scores", e));
 
-        Button backToMenu = findViewById(R.id.back_to_menu_button);
-        backToMenu.setOnClickListener(v -> {
-            finish();
-        });
+        ImageButton backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish());
     }
 }
