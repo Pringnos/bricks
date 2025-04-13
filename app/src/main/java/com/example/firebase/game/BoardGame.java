@@ -127,7 +127,6 @@ public class BoardGame extends View {
         if (levelNumber != 1){
             Intent intent1=new Intent(BoardGame.this.context, MusicService.class);
             context.startService(intent1);
-            pause = false;
         }
 
         // Reset direction: dx from level, dy forced upward
