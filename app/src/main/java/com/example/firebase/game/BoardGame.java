@@ -148,20 +148,18 @@ public class BoardGame extends View {
         List<Cirlce> ballRemove = new ArrayList<>();
 
         for (Block block : blocks) {
-        PhysicsEngine.drawBlock(canvas, block);
-            if (PhysicsEngine.detectCollision(block, ball,
-                    () -> Audio.playSound("bounce", 1.0f),
-                    () -> { if (!GameLose) Audio.playSound("bounce", 1.0f); })) {
+            PhysicsEngine.drawBlock(canvas, block);
+            if (PhysicsEngine.detectCollision(block, ball)) {
+                Audio.playSound("bounce", 1.0f);
                 score += PhysicsEngine.tryDestroyBlock(block, Power, toRemove);
             }
         }
 
         for (Cirlce power : Power) {
             canvas.drawCircle(power.getX(), power.getY(), power.getR(), powerPaint);
-            PhysicsEngine.move(power, getWidth(), gameAreaHeight, false, () -> {});
-            boolean hit = PhysicsEngine.detectCollision(paddle, power,
-                    () -> {},
-                    () -> { if (!GameLose) Audio.playSound("bounce", 1.0f); });
+            PhysicsEngine.move(power, getWidth(), gameAreaHeight, false);
+            boolean hit = PhysicsEngine.detectCollision(paddle, power);
+            if (hit && !GameLose) Audio.playSound("bounce", 1.0f);
             if (hit || power.getY() > gameAreaHeight) {
                 powerRemove.add(power);
                 if (hit) {
@@ -172,18 +170,17 @@ public class BoardGame extends View {
 
         for (Cirlce b : PBalls) {
             canvas.drawCircle(b.getX(), b.getY(), b.getR(), powerPaint);
-            PhysicsEngine.move(b, getWidth(), gameAreaHeight, false, () -> {});
+            PhysicsEngine.move(b, getWidth(), gameAreaHeight, false);
             for (Block block : blocks) {
-                if (PhysicsEngine.detectCollision(block, b,
-                        () -> Audio.playSound("bounce", 1.0f),
-                        () -> { if (!GameLose) Audio.playSound("bounce", 1.0f); })) {
+                if (PhysicsEngine.detectCollision(block, b)) {
+                    Audio.playSound("bounce", 1.0f);
                     score += PhysicsEngine.tryDestroyBlock(block, Power, toRemove);
                 }
             }
             if (b.getY() > gameAreaHeight) ballRemove.add(b);
-            PhysicsEngine.detectCollision(paddle, b,
-                    () -> {},
-                    () -> { if (!GameLose) Audio.playSound("bounce", 1.0f); });
+            if (PhysicsEngine.detectCollision(paddle, b) && !GameLose) {
+                Audio.playSound("bounce", 1.0f);
+            }
         }
 
         blocks.removeAll(toRemove);
@@ -193,10 +190,13 @@ public class BoardGame extends View {
         PhysicsEngine.drawCircle(canvas, ball, ballPaint);
         PhysicsEngine.drawPaddle(canvas, paddle, paddlePaint);
 
-        PhysicsEngine.move(ball, getWidth(), gameAreaHeight, true, () -> GameLose = true);
-        PhysicsEngine.detectCollision(paddle, ball,
-                () -> {},
-                () -> { if (!GameLose) Audio.playSound("bounce", 1.0f); });
+        if (PhysicsEngine.detectCollision(paddle, ball) && !GameLose) {
+            Audio.playSound("bounce", 1.0f);
+        }
+
+        if (PhysicsEngine.move(ball, getWidth(), gameAreaHeight, true)) {
+            GameLose = true;
+        }
 
         PhysicsEngine.moveToward(paddle, touchX, 5);
 

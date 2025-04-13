@@ -9,7 +9,7 @@ import java.util.List;
 public class PhysicsEngine {
 
     // Moves the ball or power-up, handles wall bounce, and invokes callback if main ball falls below
-    public static void move(Cirlce p, int width, int gameAreaHeight, boolean isMainBall, Runnable onBallLost) {
+    public static boolean move(Cirlce p, int width, int gameAreaHeight, boolean isMainBall) {
         p.setMMy();
         p.setMMx();
         if (p.getX() > width - p.getR() || p.getX() < p.getR()) {
@@ -20,11 +20,11 @@ public class PhysicsEngine {
             p.setCMy();
             Audio.playSound("bounce", 1.0f); // top wall bounce sound
         }
-        if (isMainBall && p.getY() > gameAreaHeight - p.getR()) onBallLost.run();
+        return isMainBall && p.getY() > gameAreaHeight - p.getR();
     }
 
     // Detects collision between a circle and an object (block or paddle) and handles bounce logic
-    public static boolean detectCollision(Objects a, Cirlce p, Runnable onBlockHit, Runnable onPaddleBounce) {
+    public static boolean detectCollision(Objects a, Cirlce p) {
         float ballLeft = p.getX() - p.getR();
         float ballRight = p.getX() + p.getR();
         float ballTop = p.getY() - p.getR();
@@ -52,11 +52,7 @@ public class PhysicsEngine {
         }
 
         if (a instanceof Block) {
-            Block block = (Block) a;
-            block.hitBlock();
-            if (block.getDurability() > 0) onBlockHit.run();
-        } else {
-            onPaddleBounce.run();
+            ((Block) a).hitBlock();
         }
 
         return true;
