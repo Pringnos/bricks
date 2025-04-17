@@ -11,7 +11,7 @@ public class Block extends Objects {
     private Cirlce powerUp;
 
 
-    public Block(int x, int y, int width, int height, int durability) {
+    public Block(float x, float y, float width, float height, int durability) {
         super(x, y, width, height);
         paint = new Paint();
         this.durability = durability;
