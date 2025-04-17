@@ -1,0 +1,272 @@
+@startuml
+class com.example.firebase.game.PhysicsEngine {
++ {static} boolean move(Context,Cirlce,int,int,boolean)
++ {static} boolean detectCollision(Objects,Cirlce)
++ {static} boolean isOutOfBounds(Cirlce,int)
++ {static} void moveToward(Objects,float,float)
++ {static} boolean didWin(List<Block>,boolean)
++ {static} Cirlce spawnBallFromPower(Cirlce)
++ {static} List<Cirlce> applyPowerEffect(Cirlce,Objects)
++ {static} void drawBlock(android.graphics.Canvas,Block)
++ {static} void drawCircle(Canvas,Cirlce,Paint)
++ {static} void drawPaddle(Canvas,Objects,Paint)
++ {static} int tryDestroyBlock(Context,Block,List<Cirlce>,List<Block>)
+}
+
+class com.example.firebase.game.Block {
+- Paint paint
+- int durability
+- int powerUpChance
+- Cirlce powerUp
++ Block setDurability(int)
++ int hitBlock()
++ int getPowerUpChance()
++ int getDurability()
++ Paint getPaint()
++ Cirlce getPowerUp()
++ Block setPowerUp(Cirlce)
++ boolean isDestroyed()
+}
+
+
+class com.example.firebase.MainActivity {
+- ActivityResultLauncher<Intent> registerActivityLauncher
+- ActivityResultLauncher<Intent> loginActivityLauncher
+- ActivityResultLauncher<Intent> playActivityLauncher
+- Button registerButton
+- TextView scoreTextView
+- FirebaseAuth firebaseAuth
+# void onCreate(Bundle)
+- void showVolumeDialog()
+- void displayUserNameAndUpdateButtons()
++ void onClick(View)
+- void loadHighScore()
+}
+
+
+class com.example.firebase.models.UserScore {
++ String name
++ int score
++ int getScore()
+}
+
+
+class com.example.firebase.game.Game {
+~ BoardGame boardGame
+~ int levelNumber
+# void onCreate(Bundle)
+# void onDestroy()
+}
+
+
+class com.example.firebase.adapters.LeaderboardAdapter {
+- List<UserScore> scores
+- Context context
++ LeaderboardAdapter.ViewHolder onCreateViewHolder(ViewGroup,int)
++ void onBindViewHolder(LeaderboardAdapter.ViewHolder,int)
++ int getItemCount()
+}
+
+
+class com.example.firebase.adapters.LeaderboardAdapter$ViewHolder {
+~ TextView rankText
+}
+
+class com.example.firebase.game.Cirlce {
+- float x
+- float dx
+- float dy
++ Cirlce setX(float)
++ Cirlce setY(float)
++ void setMMy()
++ void setMMx()
++ void setCMy()
++ void setCMx()
++ float getDy()
++ float getDx()
++ float getX()
++ float getY()
++ float getR()
++ Cirlce setDx(float)
++ Cirlce setDy(float)
+}
+
+
+class com.example.firebase.game.MusicService {
+- MediaPlayer mediaPlayer
+- boolean isPaused
+- int resumePosition
++ IBinder onBind(Intent)
++ int onStartCommand(Intent,int,int)
++ void onDestroy()
++ void pauseMusic()
+}
+
+
+class com.example.firebase.game.BoardGame {
+~ Context context
+- int levelNumber
+- List<Block> blocks
+- List<Cirlce> Power
+- List<Cirlce> PBalls
+- float touchX
+- int screenHeight
+- int screenWidth
+- int gameAreaHeight
+- boolean GameLose
+- boolean GameWin
+- boolean waitForTapToEnd
+- boolean isGameOverHandled
+- boolean pause
+- boolean Apause
+- boolean sizeInitialized
+- int PaddleHight
+- int score
+- Texttospeech t
+- Paint ballPaint
+- Objects paddle
+- Cirlce ball
+- GameThread gameThread
+- Handler gameHandler
+~ {static} long fps
+# void onSizeChanged(int,int,int,int)
++ void destroy()
+# void onDetachedFromWindow()
+- void init()
+- void initializeLevel()
+# void onDraw(Canvas)
+- void drawGameOverScreen(Canvas)
++ boolean onTouchEvent(MotionEvent)
++ int getScore()
++ boolean onKeyDown(int,KeyEvent)
+- void stopGameThreadSafely()
+- void handleGameOver(Canvas,boolean)
+- String getGameOverMessage()
+}
+
+
+class com.example.firebase.game.BoardGame$GameThread {
+- boolean isRunning
+~ long stepPerSecond
++ void run()
++ void stopThread()
+}
+
+
+class com.example.firebase.game.HighScore {
+# void onCreate(Bundle)
+}
+
+class com.example.firebase.game.Audio {
+- {static} SoundPool soundPool
+- {static} HashMap<String,Integer> soundMap
+- {static} boolean isLoaded
++ {static} void init(Context)
++ {static} void playSound(Context,String)
++ {static} void loadSound(Context,String,int)
++ {static} void release()
+}
+
+
+class com.example.firebase.HighScoreManager {
++ {static} void reportScore(int)
++ {static} void getHighScore(HighScoreCallback)
+}
+
+interface com.example.firebase.HighScoreManager$HighScoreCallback {
+~ void onHighScoreFetched(int)
+}
+
+class com.example.firebase.game.Objects {
+- float x
+- float y
+# float w
+# float h
++ float getHeight()
++ float getWidth()
++ float getRightEdge()
++ float getBottomEdge()
++ float getX()
++ float getY()
++ Objects moveHorizontally(float)
++ Objects moveVertically(float)
++ Objects MoveH(float)
++ Objects MoveW(float)
++ float getCenterY()
++ float getCenterX()
++ Objects setY(float)
++ Objects setX(float)
+}
+
+
+class com.example.firebase.levels.LevelLoader {
++ {static} int MAX_LEVEL
++ {static} LevelData loadLevel(Context,int,int,int)
+}
+
+
+class com.example.firebase.levels.LevelLoader$LevelData {
++ List<Block> blocks
++ List<Cirlce> powerUps
++ List<Cirlce> extraBalls
++ int paddleHeight
++ int ballDx
++ int ballDy
+}
+
+class com.example.firebase.Login {
+- EditText emailEditText
+- Button loginButton
+- ProgressBar progressBar
+- FirebaseAuth firebaseAuth
+# void onCreate(Bundle)
++ void onStart()
++ void onClick(View)
+- void handleLogin()
+- void updateUI(FirebaseUser)
+}
+
+
+class com.example.firebase.game.Texttospeech {
+- TextToSpeech t
+- boolean isReady
++ void speak(String)
++ void shutdown()
+}
+
+
+class com.example.firebase.Register {
+- FirebaseAuth firebaseAuth
+- EditText emailEditText
+- Button registerButton
+- ProgressBar progressBar
+# void onCreate(Bundle)
++ void onClick(View)
+- void handleRegistration()
+- void updateUserProfile(FirebaseUser,String,String)
+- void navigateToLogin()
+- void navigateToMainActivity()
+}
+
+
+
+
+com.example.firebase.game.Objects <|-- com.example.firebase.game.Block
+com.example.firebase.OnClickListener <|.. com.example.firebase.MainActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.firebase.MainActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.firebase.game.Game
+com.example.firebase.adapters.Adapter <|-- com.example.firebase.adapters.LeaderboardAdapter
+com.example.firebase.adapters.LeaderboardAdapter +.. com.example.firebase.adapters.LeaderboardAdapter$ViewHolder
+com.example.firebase.adapters.ViewHolder <|-- com.example.firebase.adapters.LeaderboardAdapter$ViewHolder
+android.app.Service <|-- com.example.firebase.game.MusicService
+android.view.View <|-- com.example.firebase.game.BoardGame
+com.example.firebase.game.BoardGame +.. com.example.firebase.game.BoardGame$GameThread
+com.example.firebase.game.Thread <|-- com.example.firebase.game.BoardGame$GameThread
+androidx.appcompat.app.AppCompatActivity <|-- com.example.firebase.game.HighScore
+com.example.firebase.HighScoreManager +.. com.example.firebase.HighScoreManager$HighScoreCallback
+com.example.firebase.levels.LevelLoader +.. com.example.firebase.levels.LevelLoader$LevelData
+com.example.firebase.OnClickListener <|.. com.example.firebase.Login
+androidx.appcompat.app.AppCompatActivity <|-- com.example.firebase.Login
+com.example.firebase.OnClickListener <|.. com.example.firebase.Register
+androidx.appcompat.app.AppCompatActivity <|-- com.example.firebase.Register
+@enduml
