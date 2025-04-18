@@ -1,17 +1,16 @@
 package com.example.firebase.game;
 
 import android.content.Context;
-import android.speech.tts.TextToSpeech;
 
 import java.util.Locale;
 
-    public class Texttospeech {
-        private TextToSpeech t;
+    public class TextToSpeech {
+        private android.speech.tts.TextToSpeech t;
         private boolean isReady = false;
 
-        public Texttospeech(Context context) {
-            t = new TextToSpeech(context, status -> {
-                if (status != TextToSpeech.ERROR) {
+        public TextToSpeech(Context context) {
+            t = new android.speech.tts.TextToSpeech(context, status -> {
+                if (status != android.speech.tts.TextToSpeech.ERROR) {
                     t.setLanguage(Locale.US);
                     isReady = true;
                 }
@@ -20,7 +19,7 @@ import java.util.Locale;
 
         public void speak(String message) {
             if (isReady && t != null) {
-                t.speak(message, TextToSpeech.QUEUE_FLUSH, null, null);
+                t.speak(message, android.speech.tts.TextToSpeech.QUEUE_FLUSH, null, null);
             }
         }
 
