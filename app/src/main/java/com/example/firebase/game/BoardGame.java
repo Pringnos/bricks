@@ -98,8 +98,17 @@ public class BoardGame extends View {
         paddlePaint = new Paint(); paddlePaint.setColor(Color.CYAN);
         powerPaint = new Paint(); powerPaint.setColor(Color.MAGENTA);
         textPaint = new Paint(); textPaint.setColor(Color.BLACK); textPaint.setTextSize(50);
-        winPaint = new Paint(); winPaint.setColor(Color.BLUE); winPaint.setTextSize(80);
-        losePaint = new Paint(); losePaint.setColor(Color.GRAY); losePaint.setTextSize(50);
+        winPaint = new Paint();
+        winPaint.setColor(Color.rgb(255, 215, 0));
+        winPaint.setTextSize(100);
+        winPaint.setFakeBoldText(true);
+        winPaint.setShadowLayer(10f, 4f, 4f, Color.BLACK);
+
+        losePaint = new Paint();
+        losePaint.setColor(Color.RED);
+        losePaint.setTextSize(80);
+        losePaint.setFakeBoldText(true);
+        losePaint.setShadowLayer(6f, 3f, 3f, Color.BLACK);
 
         initializeLevel();
 
@@ -196,9 +205,18 @@ public class BoardGame extends View {
         PhysicsEngine.moveToward(paddle, touchX, 5);
 
         canvas.save();
-        canvas.clipRect(0, gameAreaHeight, getWidth(), screenHeight);
+
+        int footerHeight = 120;
+        int footerTop = screenHeight - footerHeight;
+
+        canvas.clipRect(0, footerTop, getWidth(), screenHeight);
         canvas.drawColor(Color.LTGRAY);
-        canvas.drawText("Level: " + levelNumber + "   Score: " + score, 50, gameAreaHeight + 100, textPaint);
+
+        Paint.FontMetrics fm = textPaint.getFontMetrics();
+        float textHeight = fm.descent - fm.ascent;
+        float textY = footerTop + (footerHeight + textHeight) / 2 - fm.descent;
+
+        canvas.drawText("Level: " + levelNumber + "   Score: " + score, 50, textY, textPaint);
         canvas.restore();
 
         if (PhysicsEngine.didWin(blocks, GameWin)) {
