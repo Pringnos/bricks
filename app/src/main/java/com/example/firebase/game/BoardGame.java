@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -17,12 +16,8 @@ import androidx.annotation.NonNull;
 
 import com.example.firebase.HighScoreManager;
 import com.example.firebase.levels.LevelLoader;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 public class BoardGame extends View {
@@ -44,7 +39,7 @@ public class BoardGame extends View {
     private boolean sizeInitialized = false;
     private int PaddleHight = 0;
     private int score = 0;
-    private Texttospeech t;
+    private TextToSpeech t;
     private Paint ballPaint, paddlePaint, textPaint, winPaint, losePaint, powerPaint;
     private Objects paddle;
     private Cirlce ball;
@@ -56,7 +51,7 @@ public class BoardGame extends View {
         super(context);
         this.context = context;
         this.levelNumber = levelNumber;
-        t = new Texttospeech(BoardGame.this.context);
+        t = new TextToSpeech(BoardGame.this.context);
 
         gameHandler = new Handler(msg -> {
             if (!pause && !Apause) invalidate();
