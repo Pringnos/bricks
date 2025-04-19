@@ -28,6 +28,7 @@ public class Game extends AppCompatActivity {
         Audio.loadSound(this, "win", R.raw.win);
         Audio.loadSound(this, "pop", R.raw.pop);
         Audio.loadSound(this, "gameover", R.raw.gameover);
+        Audio.loadSound(this,"finalwin",R.raw.finalwin);
 
         levelNumber = getIntent().getIntExtra("LEVEL_NUMBER", 1);
 
