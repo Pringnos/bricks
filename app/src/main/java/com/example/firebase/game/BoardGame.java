@@ -100,13 +100,13 @@ public class BoardGame extends View {
         textPaint = new Paint(); textPaint.setColor(Color.BLACK); textPaint.setTextSize(50);
         winPaint = new Paint();
         winPaint.setColor(Color.rgb(255, 215, 0));
-        winPaint.setTextSize(100);
+        winPaint.setTextSize(80);
         winPaint.setFakeBoldText(true);
         winPaint.setShadowLayer(10f, 4f, 4f, Color.BLACK);
 
         losePaint = new Paint();
         losePaint.setColor(Color.RED);
-        losePaint.setTextSize(80);
+        losePaint.setTextSize(60);
         losePaint.setFakeBoldText(true);
         losePaint.setShadowLayer(6f, 3f, 3f, Color.BLACK);
 
