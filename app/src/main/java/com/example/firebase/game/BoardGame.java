@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -206,16 +207,23 @@ public class BoardGame extends View {
 
         canvas.save();
 
+// footer area
         int footerHeight = 120;
         int footerTop = screenHeight - footerHeight;
-
         canvas.clipRect(0, footerTop, getWidth(), screenHeight);
-        canvas.drawColor(Color.LTGRAY);
+        canvas.drawColor(Color.DKGRAY);
 
+// text appearance
+        textPaint.setColor(Color.YELLOW); // Warm & readable
+        textPaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD));
+        textPaint.setShadowLayer(6f, 0f, 0f, Color.BLACK);
+
+// Calculate vertical alignment
         Paint.FontMetrics fm = textPaint.getFontMetrics();
         float textHeight = fm.descent - fm.ascent;
         float textY = footerTop + (footerHeight + textHeight) / 2 - fm.descent;
 
+// Draw text
         canvas.drawText("Level: " + levelNumber + "   Score: " + score, 50, textY, textPaint);
         canvas.restore();
 
